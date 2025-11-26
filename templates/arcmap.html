@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html>
+<head>
+    
+    <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+    
+        <script>
+            L_NO_TOUCH = false;
+            L_DISABLE_3D = false;
+        </script>
+    
+    <style>html, body {width: 100%;height: 100%;margin: 0;padding: 0;}</style>
+    <style>#map {position:absolute;top:0;bottom:0;right:0;left:0;}</style>
+    <script src="https://cdn.jsdelivr.net/npm/leaflet@1.9.3/dist/leaflet.js"></script>
+    <script src="https://code.jquery.com/jquery-1.12.4.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Leaflet.awesome-markers/2.0.2/leaflet.awesome-markers.js"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/leaflet@1.9.3/dist/leaflet.css"/>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/css/bootstrap.min.css"/>
+    <link rel="stylesheet" href="https://netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap.min.css"/>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.2.0/css/all.min.css"/>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/Leaflet.awesome-markers/2.0.2/leaflet.awesome-markers.css"/>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/python-visualization/folium/folium/templates/leaflet.awesome.rotate.min.css"/>
+    
+            <meta name="viewport" content="width=device-width,
+                initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+            <style>
+                #map_ea7d7e90dafc7920fa457cf09127fee6 {
+                    position: relative;
+                    width: 100.0%;
+                    height: 100.0%;
+                    left: 0.0%;
+                    top: 0.0%;
+                }
+                .leaflet-container { font-size: 1rem; }
+            </style>
+        
+    <script src="https://cdn.jsdelivr.net/gh/ardhi/Leaflet.MousePosition/src/L.Control.MousePosition.min.js"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/ardhi/Leaflet.MousePosition/src/L.Control.MousePosition.min.css"/>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet-minimap/3.6.1/Control.MiniMap.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet-minimap/3.6.1/Control.MiniMap.css"/>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet.draw/1.0.2/leaflet.draw.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet.draw/1.0.2/leaflet.draw.css"/>
+    <script src="https://cdn.jsdelivr.net/gh/ljagis/leaflet-measure@2.1.7/dist/leaflet-measure.min.js"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/ljagis/leaflet-measure@2.1.7/dist/leaflet-measure.min.css"/>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet-locatecontrol/0.66.2/L.Control.Locate.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet-locatecontrol/0.66.2/L.Control.Locate.min.css"/>
+    <script src="https://unpkg.com/leaflet-control-geocoder/dist/Control.Geocoder.js"></script>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet-control-geocoder/dist/Control.Geocoder.css"/>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet.fullscreen/1.4.2/Control.FullScreen.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet.fullscreen/1.4.2/Control.FullScreen.min.css"/>
+</head>
+<body>
+    
+    
+            <div class="folium-map" id="map_ea7d7e90dafc7920fa457cf09127fee6" ></div>
+        
+</body>
+<script>
+    
+    
+            var map_ea7d7e90dafc7920fa457cf09127fee6 = L.map(
+                "map_ea7d7e90dafc7920fa457cf09127fee6",
+                {
+                    center: [31.2837, 121.4975],
+                    crs: L.CRS.EPSG3857,
+                    zoom: 12,
+                    zoomControl: true,
+                    preferCanvas: false,
+                }
+            );
+            L.control.scale().addTo(map_ea7d7e90dafc7920fa457cf09127fee6);
+
+            
+
+        
+    
+            var tile_layer_40ac0b08110663a9512868916cd5d21c = L.tileLayer(
+                "http://t7.tianditu.gov.cn/img_w/wmts?SERVICE=WMTS\u0026REQUEST=GetTile\u0026VERSION=1.0.0\u0026LAYER=img\u0026STYLE=default\u0026TILEMATRIXSET=w\u0026FORMAT=tiles\u0026TILEMATRIX={z}\u0026TILEROW={y}\u0026TILECOL={x}\u0026tk=dfd2435dda2a0e14f04e1e311dc9b713",
+                {"attribution": "\u5929\u5730\u56fe-\u5f71\u50cf", "detectRetina": false, "maxNativeZoom": 18, "maxZoom": 18, "minZoom": 0, "noWrap": false, "opacity": 1, "subdomains": "abc", "tms": false}
+            ).addTo(map_ea7d7e90dafc7920fa457cf09127fee6);
+        
+    
+                var lat_lng_popup_d45c4706a5a1857d7245a321d0ea0a3b = L.popup();
+                function latLngPop(e) {
+                    lat_lng_popup_d45c4706a5a1857d7245a321d0ea0a3b
+                        .setLatLng(e.latlng)
+                        .setContent("Latitude: " + e.latlng.lat.toFixed(4) +
+                                    "<br>Longitude: " + e.latlng.lng.toFixed(4))
+                        .openOn(map_ea7d7e90dafc7920fa457cf09127fee6);
+                    }
+                map_ea7d7e90dafc7920fa457cf09127fee6.on('click', latLngPop);
+            
+    
+            var mouse_position_2f81248c145dd55c06716c67c96e64c4 = new L.Control.MousePosition(
+                {"IngFormatter": "function(num){return L.Util.formatNum(num,4)+\u0027*\u0027;};", "emptyString": "\u9f20\u6807\u6ed1\u52a8\u663e\u793a\u7ecf\u7eac\u5ea6", "lngFirst": false, "numDigits": 20, "position": "topright", "prefix": "\u7ecf\u7eac\u5ea6", "separator": "|"}
+            );
+            mouse_position_2f81248c145dd55c06716c67c96e64c4.options["latFormatter"] =
+                function(num){return L.Util.formatNum(num,4)+'*';};;
+            mouse_position_2f81248c145dd55c06716c67c96e64c4.options["lngFormatter"] =
+                undefined;
+            map_ea7d7e90dafc7920fa457cf09127fee6.addControl(mouse_position_2f81248c145dd55c06716c67c96e64c4);
+        
+    
+            var tile_layer_f86570d653c2155d4a17dbabae4daf02 = L.tileLayer(
+                "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
+                {"attribution": "Data by \u0026copy; \u003ca target=\"_blank\" href=\"http://openstreetmap.org\"\u003eOpenStreetMap\u003c/a\u003e, under \u003ca target=\"_blank\" href=\"http://www.openstreetmap.org/copyright\"\u003eODbL\u003c/a\u003e.", "detectRetina": false, "maxNativeZoom": 18, "maxZoom": 18, "minZoom": 0, "noWrap": false, "opacity": 1, "subdomains": "abc", "tms": false}
+            );
+            var mini_map_2d3792f0dcb36decc9b9b24ce0073b86 = new L.Control.MiniMap(
+                tile_layer_f86570d653c2155d4a17dbabae4daf02,
+                {"autoToggleDisplay": false, "centerFixed": false, "collapsedHeight": 25, "collapsedWidth": 25, "height": 200, "minimized": false, "position": "bottomleft", "tiles": "http://t7.tianditu.gov.cn/img_w/wmts?SERVICE=WMTS\u0026REQUEST=GetTile\u0026VERSION=1.0.0\u0026LAYER=img\u0026STYLE=default\u0026TILEMATRIXSET=w\u0026FORMAT=tiles\u0026TILEMATRIX={z}\u0026TILEROW={y}\u0026TILECOL={x}\u0026tk=dfd2435dda2a0e14f04e1e311dc9b713", "toggleDisplay": true, "width": 300, "zoomAnimation": false, "zoomLevelOffest": -4, "zoomLevelOffset": -5}
+            );
+            map_ea7d7e90dafc7920fa457cf09127fee6.addControl(mini_map_2d3792f0dcb36decc9b9b24ce0073b86);
+        
+    
+            var options = {
+              position: "topleft",
+              draw: {},
+              edit: {},
+            }
+            // FeatureGroup is to store editable layers.
+            var drawnItems = new L.featureGroup().addTo(
+                map_ea7d7e90dafc7920fa457cf09127fee6
+            );
+            options.edit.featureGroup = drawnItems;
+            var draw_control_e3cfe687b123361f02106b2c8ee60f02 = new L.Control.Draw(
+                options
+            ).addTo( map_ea7d7e90dafc7920fa457cf09127fee6 );
+            map_ea7d7e90dafc7920fa457cf09127fee6.on(L.Draw.Event.CREATED, function(e) {
+                var layer = e.layer,
+                    type = e.layerType;
+                var coords = JSON.stringify(layer.toGeoJSON());
+                layer.on('click', function() {
+                    alert(coords);
+                    console.log(coords);
+                });
+                drawnItems.addLayer(layer);
+             });
+            map_ea7d7e90dafc7920fa457cf09127fee6.on('draw:created', function(e) {
+                drawnItems.addLayer(e.layer);
+            });
+            
+        
+    
+            var measure_control_e42433af7ad984409f41fa800fb21314 = new L.Control.Measure(
+                {"position": "topright", "primaryAreaUnit": "sqmeters", "primaryLengthUnit": "meters", "secondaryAreaUnit": "acres", "secondaryLengthUnit": "miles"});
+            map_ea7d7e90dafc7920fa457cf09127fee6.addControl(measure_control_e42433af7ad984409f41fa800fb21314);
+
+        
+    
+            var locate_control_6822cbb75f6d2b9e32f10e32c287a7e2 = L.control.locate(
+                {"autoStrat": true}
+            ).addTo(map_ea7d7e90dafc7920fa457cf09127fee6);
+            
+        
+    
+            L.Control.geocoder(
+                {"collapsed": false, "defaultMarkGeocode": true, "position": "topright"}
+            ).on('markgeocode', function(e) {
+                map_ea7d7e90dafc7920fa457cf09127fee6.setView(e.geocode.center, 11);
+            }).addTo(map_ea7d7e90dafc7920fa457cf09127fee6);
+
+        
+    
+            L.control.fullscreen(
+                {"forceSeparateButton": true, "position": "topright", "title": "Expand me", "titleCancel": "Exit Full Screen", "titleConcel": "Exit me"}
+            ).addTo(map_ea7d7e90dafc7920fa457cf09127fee6);
+        
+</script>
+</html>

@@ -1,0 +1,16 @@
+<!-- 首先要导入对应的标签 -->
+{% load mptt_tags %}
+
+{% recursetree departs %}
+<li>
+    <!-- 这里可以使用with把node赋值给其他的变量名 -->
+    {% if node.is_leaf_node %}
+    <span style="color: orange;">{{ node.name }}</span>
+    {% else %}
+    <span style="color: red;">{{ node.name }}</span>
+        <ul>
+            {{ children }}
+        </ul>
+    {% endif %}
+</li>
+{% endrecursetree %}

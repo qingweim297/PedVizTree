@@ -1,0 +1,500 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>杉木遗传信息管理系统</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- jQuery UI -->
+    <link href="https://code.jquery.com/ui/1.10.3/themes/redmond/jquery-ui.css" rel="stylesheet" media="screen">
+
+    <!-- Bootstrap -->
+    <link href="/static/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+    <!-- styles -->
+    <link href="/static/css/styles.css" rel="stylesheet">
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+    {% load static %}
+    <script src="{% static 'js/echarts.js' %}"></script>
+    <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+    <script src="https://oss.maxcdn.com/libs/respond.js/1.3.0/respond.min.js"></script>
+    <![endif]-->
+</head>
+<body>
+<div class="header">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-5">
+                <!-- Logo -->
+                <div class="logo">
+                    <h1><a href="index.html">杉木遗传信息管理系统</a></h1>
+                </div>
+            </div>
+            <div class="col-md-5">
+                <div class="row">
+                    <div class="col-lg-12">
+                        <div class="input-group form">
+                            <input type="text" class="form-control" placeholder="Search...">
+                            <span class="input-group-btn">
+	                         <button class="btn btn-primary" type="button">搜索</button>
+	                       </span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-2">
+                <div class="navbar navbar-inverse" role="banner">
+                    <nav class="collapse navbar-collapse bs-navbar-collapse navbar-right" role="navigation">
+                        <ul class="nav navbar-nav">
+                            <li class="dropdown">
+                                <a href="#" class="dropdown-toggle" data-toggle="dropdown">个人信息<b class="caret"></b></a>
+                                <ul class="dropdown-menu animated fadeInUp">
+<!--                                    <li><a href="profile.html">Profile</a></li>-->
+                                    <li><a href="/login">Logout</a></li>
+                                </ul>
+                            </li>
+                        </ul>
+                    </nav>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="page-content">
+    <div class="row">
+        <div class="col-md-2">
+            <div class="sidebar content-box" style="display: block;">
+                <ul class="nav">
+                    <!-- Main menu -->
+<!--                    <li><a href="index.html"><i class="glyphicon glyphicon-home"></i>首页</a></li>-->
+                    <li><a href="/germ_list"><i class="glyphicon glyphicon-list"></i> 育种资源清单管理</a></li>
+                    <li><a href="/image_list"><i class="glyphicon glyphicon-camera"></i> 图片上传</a></li>
+                    <li class="submenu">
+                        <a href="#">
+                            <i class="glyphicon glyphicon-record"></i> 谱系信息管理
+                            <span class="caret pull-right"></span>
+                        </a>
+                        <!-- Sub menu -->
+                        <ul>
+                            <li><a href="/pedigree_list">谱系成员管理</a></li>
+                            <li><a href="/excel_to_network">excel生成网络谱系图</a></li>
+                        </ul>
+                    </li>
+                    <li><a href="/test_tree_list"><i class="glyphicon glyphicon-tree-conifer"></i> 遗传测定林信息管理</a></li>
+                    <li class="submenu">
+                        <a href="#">
+                            <i class="glyphicon glyphicon-pencil"></i> 辅助决策分析
+                            <span class="caret pull-right"></span>
+                        </a>
+                        <!-- Sub menu -->
+                        <ul>
+                            <li><a href="/evaluate_germ">可视化资源简介</a></li>
+                            <li class="current"><a href="/analysis_germ">主成分分析</a></li>
+                            <li><a href="/estimate_plantation">育种值分析</a></li>
+
+                        </ul>
+                    </li>
+                    <li><a href="/file_list"><i class="glyphicon glyphicon-file"></i> 文件管理</a></li>
+                    <li class="submenu">
+                        <a href="#">
+                            <i class="glyphicon glyphicon-list"></i> 系统设置
+                            <span class="caret pull-right"></span>
+                        </a>
+                        <!-- Sub menu -->
+                        <ul>
+                            <li><a href="/login">Login</a></li>
+                            <li><a href="/signup">Signup</a></li>
+                        </ul>
+                    </li>
+                </ul>
+            </div>
+        </div>
+        <div class="col-md-10">
+            <div class="content-box-large">
+                <div class="panel-heading">
+                    <div class="panel-title">综合分析模块</div>
+                </div>
+                <div class="panel-body">
+                    <div class="col-md-12">
+                        <div id="heat_corr" style="width: 1050px;height:900px;"></div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="panel-heading">主成分特征值碎石图</div>
+                        <div class="panel-body">
+                            <div id="main1" style="width: 600px;height:400px;"></div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="panel-heading">主成分特征值贡献累计图</div>
+                        <div class="panel-body">
+                            <div id="main2" style="width: 650px;height:400px;"></div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="panel-heading">特征向量矩阵</div>
+                        <div class="panel-body">
+                            <table>
+                                {% for row in select %}
+                                <tr>
+                                    {% for item in row %}
+                                    <td>{{ item }}</td>
+                                    {% endfor %}
+                                </tr>
+                                {% endfor %}
+                            </table>
+                        </div>
+                    </div>
+                    <div class="col-md-12">
+                        <div class="panel-heading">特征值热力图</div>
+                        <div class="panel-body">
+                            <div id="heatmap" style="width: 1050px;height:600px;"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% block js %}
+<script src="{% static 'js/echarts.js' %}"></script>
+<script type="text/javascript">
+var chartDom = document.getElementById('heat_corr');
+var myChart = echarts.init(chartDom);
+var option;
+const x = [
+    '树高', '胸径', '球果长度', '球果宽度', '果型系数', '苞鳞长度', '苞鳞宽度',
+    '球果体积', '苞鳞长宽比', '针叶长度', '针叶宽度', '叶型系数',
+    '材积', '木材湿重', '木材干重', '木材吸水率', '木材密度', '千粒重',
+    '萌发率', '针叶密度', '针叶硬度'
+];
+const y = [
+    '树高', '胸径', '球果长度', '球果宽度', '果型系数', '苞鳞长度', '苞鳞宽度',
+    '球果体积', '苞鳞长宽比', '针叶长度', '针叶宽度', '叶型系数',
+    '材积', '木材湿重', '木材干重', '木材吸水率', '木材密度', '千粒重',
+    '萌发率', '针叶密度', '针叶硬度'
+];
+var data = {{ heat_matrix }}
+      .map(function (item) {
+      return [item[0], item[1], item[2] || '-']
+      ;});
+option = {
+  title: {
+    text: '各数量性状相关性热力图',
+    left: 10
+  },
+  tooltip: {
+    position: 'top'
+  },
+  grid: {
+    height: '60%',
+    top: '10%'
+  },
+  xAxis: {
+    type: 'category',
+    data: x,
+    splitArea: {
+      show: true
+    }
+  },
+  yAxis: {
+    type: 'category',
+    data: y,
+    splitArea: {
+      show: true
+    }
+  },
+    visualMap: {
+    min: -1,
+    max: 1,
+    calculable: true,
+    realtime: false,
+    orient: 'horizontal',
+    left: 'center',
+    bottom: '15%',
+    inRange: {
+      color: [
+        '#313695',
+        '#4575b4',
+        '#74add1',
+        '#abd9e9',
+        '#e0f3f8',
+        '#ffffbf',
+        '#fee090',
+        '#fdae61',
+        '#f46d43',
+        '#d73027',
+        '#a50026'
+      ]
+    }
+  },
+  series: [
+    {
+      name: 'correlation',
+      type: 'heatmap',
+      data: data,
+      label: {
+        show: true
+      },
+      emphasis: {
+        itemStyle: {
+          shadowBlur: 10,
+          shadowColor: 'rgba(0, 0, 0, 0.5)'
+        }
+      }
+    }
+  ]
+};
+
+option && myChart.setOption(option);
+</script>
+<script type="text/javascript">
+            var chartDom = document.getElementById('main1');
+            var data = {{ data }};
+var myChart = echarts.init(chartDom);
+var option;
+    // 配置echarts的选项
+const markLine = [];
+markLine.push({
+  yAxis: 1
+});
+option = {
+    title: {
+    text: '主成分特征值碎石图'
+  },
+  xAxis: {
+    type: 'category',
+    data:['1','2','3','4','5','6','7','8','9','10','11','12','13','14','15','16','17','18','19','20','21']
+  },
+  yAxis: {
+    type: 'value'
+  },
+series: [
+    {
+      data: data,
+      type: 'line',
+      symbol: 'triangle',
+      symbolSize: 20,
+      lineStyle: {
+        color: '#5470C6',
+        width: 4,
+        type: 'dashed'
+      },
+      itemStyle: {
+        borderWidth: 3,
+        borderColor: '#EE6666',
+        color: 'yellow'
+      },
+      markLine: {
+        data: markLine,
+        color:'green'
+      }
+    }
+  ]
+};
+
+option && myChart.setOption(option);
+        </script>
+<script type="text/javascript">
+    var chartDom = document.getElementById('main2');
+    var myChart = echarts.init(chartDom);
+    var option;
+    var data = {{ data }};
+    var others = {{ others }};
+    prime_data = data[0]+data[1]+data[2]+data[3]+data[4]+data[5]+data[6]+data[7]
+
+option = {
+  tooltip: {
+    trigger: 'item',
+    formatter: '{a} <br/>{b}: {c} ({d}%)'
+  },
+  legend: {
+    data: [
+      'Factor1',
+      'Factor2',
+      'Factor3',
+      'Factor4',
+      'Factor5',
+      'Factor6',
+      'Factor7',
+      'Factor8',
+      'Factor9',
+      'Others'
+    ]
+  },
+  series: [
+    {
+      name: 'Access From',
+      type: 'pie',
+      selectedMode: 'single',
+      radius: [0, '30%'],
+      label: {
+        position: 'inner',
+        fontSize: 14
+      },
+      labelLine: {
+        show: false
+      },
+      data: [
+        { value: prime_data, name: '7Factors' },
+        { value: others, name: 'others', selected: true }
+      ]
+    },
+    {
+      name: 'Access From',
+      type: 'pie',
+      radius: ['45%', '60%'],
+      labelLine: {
+        length: 30
+      },
+      label: {
+        formatter: '{a|{a}}{abg|}\n{hr|}\n  {b|{b}：}{c}  {per|{d}%}  ',
+        backgroundColor: '#F6F8FC',
+        borderColor: '#8C8D8E',
+        borderWidth: 1,
+        borderRadius: 4,
+        rich: {
+          a: {
+            color: '#6E7079',
+            lineHeight: 22,
+            align: 'center'
+          },
+          hr: {
+            borderColor: '#8C8D8E',
+            width: '100%',
+            borderWidth: 1,
+            height: 0
+          },
+          b: {
+            color: '#4C5058',
+            fontSize: 14,
+            fontWeight: 'bold',
+            lineHeight: 33
+          },
+          per: {
+            color: '#fff',
+            backgroundColor: '#4C5058',
+            padding: [3, 4],
+            borderRadius: 4
+          }
+        }
+      },
+      data: [
+        { value: data[0], name: 'Factor1' },
+        { value: data[1], name: 'Factor2' },
+        { value: data[2], name: 'Factor3' },
+        { value: data[3], name: 'Factor4' },
+        { value: data[4], name: 'Factor5' },
+        { value: data[5], name: 'Factor6' },
+        { value: data[6], name: 'Factor7' },
+        { value:others , name: 'Others' }
+      ]
+    }
+  ]
+};
+
+option && myChart.setOption(option);
+</script>
+<script type="text/javascript">
+var chartDom = document.getElementById('heatmap');
+var myChart = echarts.init(chartDom);
+var option;
+
+// prettier-ignore
+const hours = [
+    '树高', '胸径', '球果长度', '球果宽度', '果型系数', '苞鳞长度', '苞鳞宽度',
+    '球果体积', '苞鳞长宽比', '针叶长度', '针叶宽度', '叶型系数',
+    '材积', '木材湿重', '木材干重', '木材吸水率', '木材密度', '千粒重',
+    '萌发率', '针叶密度', '针叶硬度'
+];
+// prettier-ignore
+const days = [
+    '1', '2', '3',
+    '4', '5', '6', '7'
+];
+// prettier-ignore
+var data = {{ matrix }}
+      .map(function (item) {
+      return [item[0], item[1], item[2] || '-']
+      ;});
+option = {
+  title: {
+    text: '特征向量矩阵热力图',
+    left: 10
+  },
+  tooltip: {
+    position: 'top'
+  },
+  grid: {
+    height: '50%',
+    top: '10%'
+  },
+  xAxis: {
+    type: 'category',
+    data: hours,
+    splitArea: {
+      show: true
+    }
+  },
+  yAxis: {
+    type: 'category',
+    data: days,
+    splitArea: {
+      show: true
+    }
+  },
+  visualMap: {
+    min: -0.7,
+    max: 0.6,
+    calculable: true,
+    orient: 'horizontal',
+    left: 'center',
+    bottom: '15%'
+  },
+  series: [
+    {
+      name: 'correlation',
+      type: 'heatmap',
+      data: data,
+      label: {
+        show: true
+      },
+      emphasis: {
+        itemStyle: {
+          shadowBlur: 10,
+          shadowColor: 'rgba(0, 0, 0, 0.5)'
+        }
+      }
+    }
+  ]
+};
+
+option && myChart.setOption(option);
+</script>
+{% endblock %}
+<footer>
+    <div class="container">
+
+        <div class="copy text-center">
+            copyright 2022 数量遗传与林木（杉木）育种团队<br>Quantitative Genetics and Tree Breeding<a href='#'>Website</a>
+        </div>
+
+    </div>
+</footer>
+
+<link href="/static/vendors/datatables/dataTables.bootstrap.css" rel="stylesheet" media="screen">
+
+<!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
+<script src="https://code.jquery.com/jquery.js"></script>
+<!-- jQuery UI -->
+<script src="https://code.jquery.com/ui/1.10.3/jquery-ui.js"></script>
+<!-- Include all compiled plugins (below), or include individual files as needed -->
+<script src="/static/bootstrap/js/bootstrap.min.js"></script>
+<script src="/static/vendors/datatables/js/jquery.dataTables.min.js"></script>
+<script src="/static/vendors/datatables/dataTables.bootstrap.js"></script>
+<script src="/static/js/custom.js"></script>
+<script src="/static/js/tables.js"></script>
+</body>
+</html>

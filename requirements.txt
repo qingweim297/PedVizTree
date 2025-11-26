@@ -1,0 +1,17 @@
+Django==4.1.6
+django_import_export==3.2.0
+django_mptt==0.16.0
+matplotlib~=3.7.2
+networkx~=3.1
+numpy~=1.24.3
+pandas~=2.2.3
+pyecharts~=2.0.4
+PyMySQL==1.0.2
+pyvis==0.3.2
+scikit_learn==1.2.2
+seaborn==0.13.2
+statsmodels==0.14.4
+
+django-mptt~=0.15.0
+statsmodels~=0.14.4
+scikit-learn~=1.4.2

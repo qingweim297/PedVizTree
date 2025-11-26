@@ -1,0 +1,828 @@
+<html>
+    <head>
+        <meta charset="utf-8">
+        
+            <script src="lib/bindings/utils.js"></script>
+            <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/vis-network/9.1.2/dist/dist/vis-network.min.css" integrity="sha512-WgxfT5LWjfszlPHXRmBWHkV2eceiWTOBvrKCNbdgDYTHrT2AeLCGbF4sZlZw3UMN3WtL0tGUoIAKsu8mllg/XA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+            <script src="https://cdnjs.cloudflare.com/ajax/libs/vis-network/9.1.2/dist/vis-network.min.js" integrity="sha512-LnvoEWDFrqGHlHmDD2101OrLcbsfkrzoSpvtSQtxK3RMnRV0eOkhhBN2dXHKRrUU8p2DGRTk35n4O8nWSVe1mQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+            
+                <link href="lib/tom-select/tom-select.css" rel="stylesheet">
+                <script src="lib/tom-select/tom-select.complete.min.js"></script>
+            
+        
+<center>
+<h1></h1>
+</center>
+
+<!-- <link rel="stylesheet" href="../node_modules/vis/dist/vis.min.css" type="text/css" />
+<script type="text/javascript" src="../node_modules/vis/dist/vis.js"> </script>-->
+        <link
+          href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/css/bootstrap.min.css"
+          rel="stylesheet"
+          integrity="sha384-eOJMYsd53ii+scO/bJGFsiCZc+5NDVN2yr8+0RDqr0Ql0h+rP48ckxlpbzKgwra6"
+          crossorigin="anonymous"
+        />
+        <script
+          src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/js/bootstrap.bundle.min.js"
+          integrity="sha384-JEW9xMcG8R+pH31jmWH6WWP0WintQrMb4s7ZOdauHnUtxwoG2vI5DkLtS3qm9Ekf"
+          crossorigin="anonymous"
+        ></script>
+
+
+        <center>
+          <h1></h1>
+        </center>
+        <style type="text/css">
+
+             #mynetwork {
+                 width: 100%;
+                 height: 1000px;
+                 background-color: #ffffff;
+                 border: 1px solid lightgray;
+                 position: relative;
+                 float: left;
+             }
+
+             
+             #loadingBar {
+                 position:absolute;
+                 top:0px;
+                 left:0px;
+                 width: 100%;
+                 height: 1000px;
+                 background-color:rgba(200,200,200,0.8);
+                 -webkit-transition: all 0.5s ease;
+                 -moz-transition: all 0.5s ease;
+                 -ms-transition: all 0.5s ease;
+                 -o-transition: all 0.5s ease;
+                 transition: all 0.5s ease;
+                 opacity:1;
+             }
+
+             #bar {
+                 position:absolute;
+                 top:0px;
+                 left:0px;
+                 width:20px;
+                 height:20px;
+                 margin:auto auto auto auto;
+                 border-radius:11px;
+                 border:2px solid rgba(30,30,30,0.05);
+                 background: rgb(0, 173, 246); /* Old browsers */
+                 box-shadow: 2px 0px 4px rgba(0,0,0,0.4);
+             }
+
+             #border {
+                 position:absolute;
+                 top:10px;
+                 left:10px;
+                 width:500px;
+                 height:23px;
+                 margin:auto auto auto auto;
+                 box-shadow: 0px 0px 4px rgba(0,0,0,0.2);
+                 border-radius:10px;
+             }
+
+             #text {
+                 position:absolute;
+                 top:8px;
+                 left:530px;
+                 width:30px;
+                 height:50px;
+                 margin:auto auto auto auto;
+                 font-size:22px;
+                 color: #000000;
+             }
+
+             div.outerBorder {
+                 position:relative;
+                 top:400px;
+                 width:600px;
+                 height:44px;
+                 margin:auto auto auto auto;
+                 border:8px solid rgba(0,0,0,0.1);
+                 background: rgb(252,252,252); /* Old browsers */
+                 background: -moz-linear-gradient(top,  rgba(252,252,252,1) 0%, rgba(237,237,237,1) 100%); /* FF3.6+ */
+                 background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,rgba(252,252,252,1)), color-stop(100%,rgba(237,237,237,1))); /* Chrome,Safari4+ */
+                 background: -webkit-linear-gradient(top,  rgba(252,252,252,1) 0%,rgba(237,237,237,1) 100%); /* Chrome10+,Safari5.1+ */
+                 background: -o-linear-gradient(top,  rgba(252,252,252,1) 0%,rgba(237,237,237,1) 100%); /* Opera 11.10+ */
+                 background: -ms-linear-gradient(top,  rgba(252,252,252,1) 0%,rgba(237,237,237,1) 100%); /* IE10+ */
+                 background: linear-gradient(to bottom,  rgba(252,252,252,1) 0%,rgba(237,237,237,1) 100%); /* W3C */
+                 filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#fcfcfc', endColorstr='#ededed',GradientType=0 ); /* IE6-9 */
+                 border-radius:72px;
+                 box-shadow: 0px 0px 10px rgba(0,0,0,0.2);
+             }
+             
+
+             
+             #config {
+                 float: left;
+                 width: 400px;
+                 height: 600px;
+             }
+             
+
+             
+        </style>
+    </head>
+
+
+    <body>
+        <div class="card" style="width: 100%">
+            
+                <div id="select-menu" class="card-header">
+                    <div class="row no-gutters">
+                        <div class="col-10 pb-2">
+                            <select
+                            class="form-select"
+                            aria-label="Default select example"
+                            onchange="selectNode([value]);"
+                            id="select-node"
+                            placeholder="Select node..."
+                            >
+                                <option selected>Select a Node by ID</option>
+                                
+                                    <option value="1NP6502">1NP6502</option>
+                                
+                                    <option value="2C004">2C004</option>
+                                
+                                    <option value="1NP6503">1NP6503</option>
+                                
+                                    <option value="2C001">2C001</option>
+                                
+                                    <option value="1NP6507">1NP6507</option>
+                                
+                                    <option value="2C003">2C003</option>
+                                
+                                    <option value="1NP6509">1NP6509</option>
+                                
+                                    <option value="2B029">2B029</option>
+                                
+                                    <option value="1NP6510">1NP6510</option>
+                                
+                                    <option value="2B030">2B030</option>
+                                
+                                    <option value="1NP6511">1NP6511</option>
+                                
+                                    <option value="2B008">2B008</option>
+                                
+                                    <option value="2B032">2B032</option>
+                                
+                                    <option value="2B050">2B050</option>
+                                
+                                    <option value="2B059">2B059</option>
+                                
+                                    <option value="2D058">2D058</option>
+                                
+                                    <option value="1NP6515">1NP6515</option>
+                                
+                                    <option value="2C006">2C006</option>
+                                
+                                    <option value="1NP6519">1NP6519</option>
+                                
+                                    <option value="2C007">2C007</option>
+                                
+                                    <option value="1NP6524">1NP6524</option>
+                                
+                                    <option value="2D014">2D014</option>
+                                
+                                    <option value="1NP6526">1NP6526</option>
+                                
+                                    <option value="2C010">2C010</option>
+                                
+                                    <option value="1NP6538">1NP6538</option>
+                                
+                                    <option value="2C021">2C021</option>
+                                
+                                    <option value="1NP6540">1NP6540</option>
+                                
+                                    <option value="2D003">2D003</option>
+                                
+                                    <option value="2D008">2D008</option>
+                                
+                                    <option value="1NP6545">1NP6545</option>
+                                
+                                    <option value="2B014">2B014</option>
+                                
+                                    <option value="1NP6547">1NP6547</option>
+                                
+                                    <option value="2C016">2C016</option>
+                                
+                                    <option value="2D103">2D103</option>
+                                
+                                    <option value="1NP6548">1NP6548</option>
+                                
+                                    <option value="2A002">2A002</option>
+                                
+                                    <option value="3N002">3N002</option>
+                                
+                                    <option value="2A003">2A003</option>
+                                
+                                    <option value="3N146">3N146</option>
+                                
+                                    <option value="2A009">2A009</option>
+                                
+                                    <option value="3N012">3N012</option>
+                                
+                                    <option value="3N060">3N060</option>
+                                
+                                    <option value="2A011">2A011</option>
+                                
+                                    <option value="3N075">3N075</option>
+                                
+                                    <option value="2A015">2A015</option>
+                                
+                                    <option value="3N132">3N132</option>
+                                
+                                    <option value="3N166">3N166</option>
+                                
+                                    <option value="2A018">2A018</option>
+                                
+                                    <option value="3N008">3N008</option>
+                                
+                                    <option value="2A019">2A019</option>
+                                
+                                    <option value="4N152">4N152</option>
+                                
+                                    <option value="2B056">2B056</option>
+                                
+                                    <option value="3N053">3N053</option>
+                                
+                                    <option value="3N006">3N006</option>
+                                
+                                    <option value="3N016">3N016</option>
+                                
+                                    <option value="3N034">3N034</option>
+                                
+                                    <option value="G1">G1</option>
+                                
+                                    <option value="1JOX6539">1JOX6539</option>
+                                
+                                    <option value="1JOX6546">1JOX6546</option>
+                                
+                                    <option value="1JOX6554">1JOX6554</option>
+                                
+                                    <option value="1JY7401">1JY7401</option>
+                                
+                                    <option value="1JY7402">1JY7402</option>
+                                
+                                    <option value="1JY7403">1JY7403</option>
+                                
+                                    <option value="1JY7405">1JY7405</option>
+                                
+                                    <option value="1JY7406">1JY7406</option>
+                                
+                                    <option value="1JY7408">1JY7408</option>
+                                
+                                    <option value="1JY7410">1JY7410</option>
+                                
+                                    <option value="1JY74103">1JY74103</option>
+                                
+                                    <option value="1JY74108">1JY74108</option>
+                                
+                                    <option value="1JY7411-1">1JY7411-1</option>
+                                
+                                    <option value="1JY74115">1JY74115</option>
+                                
+                                    <option value="1JY74118">1JY74118</option>
+                                
+                                    <option value="1JY7417">1JY7417</option>
+                                
+                                    <option value="1JY7428">1JY7428</option>
+                                
+                                    <option value="1JY7434">1JY7434</option>
+                                
+                                    <option value="1JY7436">1JY7436</option>
+                                
+                                    <option value="1JY7438">1JY7438</option>
+                                
+                                    <option value="1JY7439">1JY7439</option>
+                                
+                                    <option value="1JY7442">1JY7442</option>
+                                
+                                    <option value="1JY7451">1JY7451</option>
+                                
+                                    <option value="1JY7453">1JY7453</option>
+                                
+                                    <option value="1JY7456">1JY7456</option>
+                                
+                                    <option value="1JY7478">1JY7478</option>
+                                
+                                    <option value="1JY7491">1JY7491</option>
+                                
+                                    <option value="1LZ6611">1LZ6611</option>
+                                
+                                    <option value="1LZ7302">1LZ7302</option>
+                                
+                                    <option value="1LZ7305">1LZ7305</option>
+                                
+                                    <option value="1LZ7308">1LZ7308</option>
+                                
+                                    <option value="1LZ7309">1LZ7309</option>
+                                
+                                    <option value="1LZ7311">1LZ7311</option>
+                                
+                                    <option value="1LZ7317">1LZ7317</option>
+                                
+                                    <option value="1LZ7320">1LZ7320</option>
+                                
+                                    <option value="1NP6421">1NP6421</option>
+                                
+                                    <option value="1NP6504">1NP6504</option>
+                                
+                                    <option value="1NP6505">1NP6505</option>
+                                
+                                    <option value="1NP6508">1NP6508</option>
+                                
+                                    <option value="1NP6514">1NP6514</option>
+                                
+                                    <option value="1NP6516">1NP6516</option>
+                                
+                                    <option value="1NP6517">1NP6517</option>
+                                
+                                    <option value="1NP6518">1NP6518</option>
+                                
+                                    <option value="1NP6520">1NP6520</option>
+                                
+                                    <option value="1NP6521">1NP6521</option>
+                                
+                                    <option value="1NP6522">1NP6522</option>
+                                
+                                    <option value="1NP6523">1NP6523</option>
+                                
+                                    <option value="1NP6525">1NP6525</option>
+                                
+                                    <option value="1NP6527">1NP6527</option>
+                                
+                                    <option value="1NP6528">1NP6528</option>
+                                
+                                    <option value="1NP6529">1NP6529</option>
+                                
+                                    <option value="1NP6530-1">1NP6530-1</option>
+                                
+                                    <option value="1NP6532">1NP6532</option>
+                                
+                                    <option value="1NP6533">1NP6533</option>
+                                
+                                    <option value="1NP6535">1NP6535</option>
+                                
+                                    <option value="1NP6536">1NP6536</option>
+                                
+                                    <option value="1NP6537">1NP6537</option>
+                                
+                                    <option value="1NP6539">1NP6539</option>
+                                
+                                    <option value="1NP6543-1-1">1NP6543-1-1</option>
+                                
+                                    <option value="1NP6543-2">1NP6543-2</option>
+                                
+                                    <option value="1NP6544-3">1NP6544-3</option>
+                                
+                                    <option value="1SM7401">1SM7401</option>
+                                
+                                    <option value="1SM7402">1SM7402</option>
+                                
+                                    <option value="1SM7404">1SM7404</option>
+                                
+                                    <option value="1SM7406">1SM7406</option>
+                                
+                                    <option value="1SM7407">1SM7407</option>
+                                
+                                    <option value="1SM7410">1SM7410</option>
+                                
+                                    <option value="1SM7411">1SM7411</option>
+                                
+                                    <option value="1SM7415">1SM7415</option>
+                                
+                                    <option value="1SM7435">1SM7435</option>
+                                
+                                    <option value="1SM7438">1SM7438</option>
+                                
+                                    <option value="1SM7439">1SM7439</option>
+                                
+                                    <option value="1SM7440">1SM7440</option>
+                                
+                                    <option value="1SM7441">1SM7441</option>
+                                
+                                    <option value="1SM7443">1SM7443</option>
+                                
+                                    <option value="1SM7446">1SM7446</option>
+                                
+                                    <option value="1SM7451">1SM7451</option>
+                                
+                                    <option value="1SM7454">1SM7454</option>
+                                
+                                    <option value="1SM7461">1SM7461</option>
+                                
+                                    <option value="2A001">2A001</option>
+                                
+                                    <option value="2A005">2A005</option>
+                                
+                                    <option value="2A006">2A006</option>
+                                
+                                    <option value="2A008">2A008</option>
+                                
+                                    <option value="2A012">2A012</option>
+                                
+                                    <option value="2A013">2A013</option>
+                                
+                                    <option value="2A016">2A016</option>
+                                
+                                    <option value="2A017">2A017</option>
+                                
+                                    <option value="2A020">2A020</option>
+                                
+                                    <option value="2A021">2A021</option>
+                                
+                                    <option value="2A022">2A022</option>
+                                
+                                    <option value="2A023">2A023</option>
+                                
+                                    <option value="2A024">2A024</option>
+                                
+                                    <option value="2A025">2A025</option>
+                                
+                                    <option value="2A026">2A026</option>
+                                
+                                    <option value="2A027">2A027</option>
+                                
+                                    <option value="2B053">2B053</option>
+                                
+                                    <option value="2B061">2B061</option>
+                                
+                                    <option value="2C034">2C034</option>
+                                
+                                    <option value="G6">G6</option>
+                                
+                                    <option value="2AHHS1">2AHHS1</option>
+                                
+                                    <option value="2AHXT1">2AHXT1</option>
+                                
+                                    <option value="2AHXT5">2AHXT5</option>
+                                
+                                    <option value="2ZJ01">2ZJ01</option>
+                                
+                                    <option value="2ZJ131">2ZJ131</option>
+                                
+                                    <option value="2ZJ519">2ZJ519</option>
+                                
+                                    <option value="G5">G5</option>
+                                
+                                    <option value="2GDXYBY7">2GDXYBY7</option>
+                                
+                                    <option value="2GDXYBY8">2GDXYBY8</option>
+                                
+                                    <option value="G2">G2</option>
+                                
+                                    <option value="2GXLW1153">2GXLW1153</option>
+                                
+                                    <option value="2GXLW1169">2GXLW1169</option>
+                                
+                                    <option value="2HNJX21">2HNJX21</option>
+                                
+                                    <option value="2HNJX29">2HNJX29</option>
+                                
+                                    <option value="G4">G4</option>
+                                
+                                    <option value="2JXQN82">2JXQN82</option>
+                                
+                                    <option value="2JXSR23">2JXSR23</option>
+                                
+                                    <option value="2JXSR26">2JXSR26</option>
+                                
+                                    <option value="G3">G3</option>
+                                
+                                    <option value="2SCXY12">2SCXY12</option>
+                                
+                                    <option value="2SCXY13">2SCXY13</option>
+                                
+                                    <option value="0">0</option>
+                                
+                                    <option value="3N133">3N133</option>
+                                
+                                    <option value="3N135">3N135</option>
+                                
+                                    <option value="3N140">3N140</option>
+                                
+                            </select>
+                        </div>
+                        <div class="col-2 pb-2">
+                            <button type="button" class="btn btn-primary btn-block" onclick="neighbourhoodHighlight({nodes: []});">Reset Selection</button>
+                        </div>
+                    </div>
+                </div>
+            
+            
+              <div id="filter-menu" class="card-header">
+                <div class="row no-gutters">
+                  <div class="col-3 pb-2">
+                    <select
+                            class="form-select"
+                            aria-label="Default select example"
+                            onchange="updateFilter(value, 'item')"
+                            id="select-item"
+                        >
+                        <option value="">Select a network item</option>
+                        <option value="edge">edge</option>
+                        <option value="node">node</option>
+                    </select>
+                  </div>
+                  <div class="col-3 pb-2">
+                    <select
+                            class="form-select"
+                            aria-label="Default select example"
+                            onchange="updateFilter(value, 'property')"
+                            id="select-property"
+                        >
+                        <option value="">Select a property...</option>
+                    </select>
+                  </div>
+                  <div class="col-3 pb-2">
+                    <select
+                            class="form-select"
+                            aria-label="Default select example"
+                            id="select-value"
+                        >
+                        <option value="">Select value(s)...</option>
+                    </select>
+                  </div>
+                  <div class="col-1 pb-2">
+                    <button type="button" class="btn btn-primary btn-block" onclick="highlightFilter(filter);">Filter</button>
+                  </div>
+                  <div class="col-2 pb-2">
+                    <button type="button" class="btn btn-primary btn-block" onclick="clearFilter(true)">Reset Selection</button>
+                  </div>
+                </div>
+              </div>
+            
+            <div id="mynetwork" class="card-body"></div>
+        </div>
+
+        
+            <div id="loadingBar">
+              <div class="outerBorder">
+                <div id="text">0%</div>
+                <div id="border">
+                  <div id="bar"></div>
+                </div>
+              </div>
+            </div>
+        
+        
+            <div id="config"></div>
+        
+
+        <script type="text/javascript">
+
+              // initialize global variables.
+              var edges;
+              var nodes;
+              var allNodes;
+              var allEdges;
+              var nodeColors;
+              var originalNodes;
+              var network;
+              var container;
+              var options, data;
+              var filter = {
+                  item : '',
+                  property : '',
+                  value : []
+              };
+
+              
+                  new TomSelect("#select-node",{
+                      create: false,
+                      sortField: {
+                          field: "text",
+                          direction: "asc"
+                      }
+                  });
+              
+
+              
+                  // explicitly using onItemAdd and this function as we need to save multiple values
+                  let updateValueFilter = function() {
+                      return function () {
+                      filter['value'].push(arguments[0])
+                      }
+                  }
+
+                  let valueControl = new TomSelect("#select-value",{
+                      maxItems: null,
+                      valueField: 'id',
+                      labelField: 'title',
+                      searchField: 'title',
+                      create: false,
+                      sortField: {
+                          field: "text",
+                          direction: "asc"
+                      },
+                      onItemAdd: updateValueFilter()
+                  });
+
+                  let addValues = function() {
+                      return function () {
+                          // clear the current value options and add the selected attribute values
+                          // tom-select handles duplicates
+                          let selectedProperty = arguments[0];
+                          valueControl.clear();
+                          valueControl.clearOptions();
+                          filter['value'] = []
+                          if (filter['item'] === 'node') {
+                              for (let each in allNodes) {
+                                  valueControl.addOption({
+                                      id:allNodes[each][selectedProperty],
+                                      title:allNodes[each][selectedProperty]
+                                  })
+                              }
+                          }
+                          else if (filter['item'] === 'edge') {
+                              for (let each in allEdges) {
+                                  valueControl.addOption({
+                                      id:allEdges[each][selectedProperty],
+                                      title:allEdges[each][selectedProperty]
+                                  })
+                              }
+                          }
+                      }
+                  };
+
+                  let propControl = new TomSelect("#select-property",{
+                      valueField: 'id',
+                      labelField: 'title',
+                      searchField: 'title',
+                      create: false,
+                      sortField: {
+                          field: "text",
+                          direction: "asc"
+                      },
+                      onItemAdd: addValues()
+                  });
+
+                  let addProperties = function() {
+                      return function () {
+                          // loops through the selected network item and adds the attributes to dropdown
+                          // tom-select handles duplicates
+                          clearFilter(false)
+                          if (arguments[0] === 'edge') {
+                              for (let each in allEdges) {
+                                  if (allEdges.hasOwnProperty(each)) {
+                                      for (let eachProp in allEdges[each]) {
+                                          if (allEdges[each].hasOwnProperty(eachProp)) {
+                                              propControl.addOption({id: eachProp, title: eachProp})
+                                          }
+                                      }
+                                  }
+                              }
+                          }
+                          else if (arguments[0] === 'node') {
+                              for (let each in allNodes) {
+                                  if (allNodes.hasOwnProperty(each)) {
+                                      for (let eachProp in allNodes[each]) {
+                                          if (allNodes[each].hasOwnProperty(eachProp)
+                                              && (eachProp !== 'hidden' && eachProp !== 'savedLabel'
+                                                  && eachProp !== 'hiddenLabel')) {
+                                              propControl.addOption({id: eachProp, title: eachProp})
+
+                                          }
+                                      }
+                                  }
+                              }
+                          }
+                      }
+                  };
+
+                  let itemControl = new TomSelect("#select-item",{
+                      create: false,
+                      sortField:{
+                          field: "text",
+                          direction: "asc"
+                      },
+                      onItemAdd: addProperties()
+                  });
+
+                  function clearFilter(reset) {
+                      // utility function to clear all the selected filter options
+                      // if reset is set to true, the existing filter will be removed
+                      // else, only the dropdown options are cleared
+                      propControl.clear();
+                      propControl.clearOptions();
+                      valueControl.clear();
+                      valueControl.clearOptions();
+                      filter = {
+                          item : '',
+                          property : '',
+                          value : []
+                      }
+                      if (reset) {
+                          itemControl.clear();
+                          filterHighlight({nodes: []})
+                      }
+                  }
+
+                  function updateFilter(value, key) {
+                      // key could be 'item' or 'property' and value is as selected in dropdown
+                      filter[key] = value
+                  }
+
+              
+
+              // This method is responsible for drawing the graph, returns the drawn network
+              function drawGraph() {
+                  var container = document.getElementById('mynetwork');
+
+                  
+
+                  // parsing and collecting nodes and edges from the python
+                  nodes = new vis.DataSet([{"color": "yellow", "id": "1NP6502", "label": "1NP6502", "shape": "dot", "size": 10, "title": "\u8be5\u4e2a\u4f53\u5728\u4ea4\u914d\u8fc7\u7a0b\u51fa\u73b0\u4e86\n2\u6b21\n\u8be5\u4e2a\u4f53\u4eb2\u7f18\u5173\u7cfb\u7a0b\u5ea6\u6700\u9ad8\u7684\u56db\u4f4d\u5206\u522b\u662f:\n[\u00271NP6502\u0027, \u00271NP6510\u0027, \u00271NP6515\u0027, \u00271NP6516\u0027]\n\u4eb2\u7f18\u6307\u6570\u4e3a:\n[0.8019756020727722, 0.11559351577784772, 0.2617365216889141, 0.25366971107811487]", "value": 2000.0}, {"color": "blue", "id": "2C004", "label": "2C004", "node_size": 2000.0, "shape": "dot", "size": 10, "title": "\u8be5\u4e2a\u4f53\u5728\u4ea4\u914d\u8fc7\u7a0b\u51fa\u73b0\u4e86\n2\u6b21\n\u8be5\u4e2a\u4f53\u4eb2\u7f18\u5173\u7cfb\u7a0b\u5ea6\u6700\u9ad8\u7684\u56db\u4f4d\u5206\u522b\u662f:\n[\u00271NP6509\u0027, \u00272B029\u0027, \u00272C004\u0027, \u00273N016\u0027]\n\u4eb2\u7f18\u6307\u6570\u4e3a:\n[0.14138237135804244, 0.1447590175254883, 0.8299493606474313, 0.15660353003195043]"}, {"color": "yellow", "id": "1NP6503", "label": "1NP6503", "shape": "dot", "size": 10, "title": "\u8be5\u4e2a\u4f53\u5728\u4ea4\u914d\u8fc7\u7a0b\u51fa\u73b0\u4e86\n2\u6b21\n\u8be5\u4e2a\u4f53\u4eb2\u7f18\u5173\u7cfb\u7a0b\u5ea6\u6700\u9ad8\u7684\u56db\u4f4d\u5206\u522b\u662f:\n[\u00271NP6503\u0027, \u00272A019\u0027, \u00272B053\u0027, \u00272C001\u0027]\n\u4eb2\u7f18\u6307\u6570\u4e3a:\n[0.8109116098254332, 0.1628449294192043, 0.05364470960429974, 0.16704264604113142]", "value": 2000.0}, {"color": "blue", "id": "2C001", "label": "2C001", "node_size": 2000.0, "shape": "dot", "size": 10, "title": "\u8be5\u4e2a\u4f53\u5728\u4ea4\u914d\u8fc7\u7a0b\u51fa\u73b0\u4e86\n2\u6b21\n\u8be5\u4e2a\u4f53\u4eb2\u7f18\u5173\u7cfb\u7a0b\u5ea6\u6700\u9ad8\u7684\u56db\u4f4d\u5206\u522b\u662f:\n[\u00271NP6503\u0027, \u00271NP6528\u0027, \u00272A019\u0027, \u00272C001\u0027]\n\u4eb2\u7f18\u6307\u6570\u4e3a:\n[0.16704264604113142, 0.048476195056026454, 0.07188597638940322, 0.8571093406899493]"}, {"color": "yellow", "id": "1NP6507", "label": "1NP6507", "shape": "dot", "size": 10, "title": "\u8be5\u4e2a\u4f53\u5728\u4ea4\u914d\u8fc7\u7a0b\u51fa\u73b0\u4e86\n2\u6b21\n\u8be5\u4e2a\u4f53\u4eb2\u7f18\u5173\u7cfb\u7a0b\u5ea6\u6700\u9ad8\u7684\u56db\u4f4d\u5206\u522b\u662f:\n[\u00271JOX6554\u0027, \u00271NP6507\u0027, \u00271NP6510\u0027, \u00271NP6518\u0027]\n\u4eb2\u7f18\u6307\u6570\u4e3a:\n[0.15261727915762277, 0.8344781305431906, 0.046837700108231434, 0.04438080841081109]", "value": 2000.0}, {"color": "blue", "id": "2C003", "label": "2C003", "node_size": 1000.0, "shape": "dot", "size": 10, "title": "\u8be5\u4e2a\u4f53\u5728\u4ea4\u914d\u8fc7\u7a0b\u51fa\u73b0\u4e86\n1\u6b21\n\u8be5\u4e2a\u4f53\u4eb2\u7f18\u5173\u7cfb\u7a0b\u5ea6\u6700\u9ad8\u7684\u56db\u4f4d\u5206\u522b\u662f:\n[\u00271NP6502\u0027, \u00271NP6515\u0027, \u00271NP6516\u0027, \u00272C003\u0027]\n\u4eb2\u7f18\u6307\u6570\u4e3a:\n[0.09323696803889711, 0.12395540617897931, 0.13114086644403175, 0.811466768178906]"}, {"color": "yellow", "id": "1NP6509", "label": "1NP6509", "shape": "dot", "size": 10, "title": "\u8be5\u4e2a\u4f53\u5728\u4ea4\u914d\u8fc7\u7a0b\u51fa\u73b0\u4e86\n2\u6b21\n\u8be5\u4e2a\u4f53\u4eb2\u7f18\u5173\u7cfb\u7a0b\u5ea6\u6700\u9ad8\u7684\u56db\u4f4d\u5206\u522b\u662f:\n[\u00271NP6509\u0027, \u00272B029\u0027, \u00272C004\u0027, \u00273N016\u0027]\n\u4eb2\u7f18\u6307\u6570\u4e3a:\n[0.8267350812838936, 0.10225634677021515, 0.14138237135804244, 0.05770999324962025]", "value": 2000.0}, {"color": "blue", "id": "2B029", "label": "2B029", "node_size": 1000.0, "shape": "dot", "size": 10, "title": "\u8be5\u4e2a\u4f53\u5728\u4ea4\u914d\u8fc7\u7a0b\u51fa\u73b0\u4e86\n1\u6b21\n\u8be5\u4e2a\u4f53\u4eb2\u7f18\u5173\u7cfb\u7a0b\u5ea6\u6700\u9ad8\u7684\u56db\u4f4d\u5206\u522b\u662f:\n[\u00271NP6509\u0027, \u00271NP6510\u0027, \u00272B029\u0027, \u00272C004\u0027]\n\u4eb2\u7f18\u6307\u6570\u4e3a:\n[0.10225634677021515, 0.10935260251875017, 0.8599215920689682, 0.1447590175254883]"}, {"color": "yellow", "id": "1NP6510", "label": "1NP6510", "shape": "dot", "size": 10, "title": "\u8be5\u4e2a\u4f53\u5728\u4ea4\u914d\u8fc7\u7a0b\u51fa\u73b0\u4e86\n2\u6b21\n\u8be5\u4e2a\u4f53\u4eb2\u7f18\u5173\u7cfb\u7a0b\u5ea6\u6700\u9ad8\u7684\u56db\u4f4d\u5206\u522b\u662f:\n[\u00271NP6508\u0027, \u00271NP6510\u0027, \u00271NP6518\u0027, \u00271NP6526\u0027]\n\u4eb2\u7f18\u6307\u6570\u4e3a:\n[0.3066226787901257, 0.8804255054076715, 0.23408360769682018, 0.2521807005381069]", "value": 2000.0}, {"color": "blue", "id": "2B030", "label": "2B030", "node_size": 1000.0, "shape": "dot", "size": 10, "title": "\u8be5\u4e2a\u4f53\u5728\u4ea4\u914d\u8fc7\u7a0b\u51fa\u73b0\u4e86\n1\u6b21\n\u8be5\u4e2a\u4f53\u4eb2\u7f18\u5173\u7cfb\u7a0b\u5ea6\u6700\u9ad8\u7684\u56db\u4f4d\u5206\u522b\u662f:\n[\u00271NP6529\u0027, \u00271NP6547\u0027, \u00272A016\u0027, \u00272B030\u0027]\n\u4eb2\u7f18\u6307\u6570\u4e3a:\n[0.04492725340322736, 0.06226692163265183, 0.07373958304596412, 0.837935960112593]"}, {"color": "yellow", "id": "1NP6511", "label": "1NP6511", "shape": "dot", "size": 10, "title": "\u8be5\u4e2a\u4f53\u5728\u4ea4\u914d\u8fc7\u7a0b\u51fa\u73b0\u4e86\n6\u6b21\n\u8be5\u4e2a\u4f53\u4eb2\u7f18\u5173\u7cfb\u7a0b\u5ea6\u6700\u9ad8\u7684\u56db\u4f4d\u5206\u522b\u662f:\n[\u00271NP6502\u0027, \u00271NP6511\u0027, \u00271NP6526\u0027, \u00272B032\u0027]\n\u4eb2\u7f18\u6307\u6570\u4e3a:\n[0.05304725810130603, 0.8534152528370216, 0.05391280928200615, 0.1664009568759971]", "value": 6000.0}, {"color": "blue", "id": "2B008", "label": "2B008", "node_size": 1000.0, "shape": "dot", "size": 10, "title": "\u8be5\u4e2a\u4f53\u5728\u4ea4\u914d\u8fc7\u7a0b\u51fa\u73b0\u4e86\n1\u6b21\n\u8be5\u4e2a\u4f53\u4eb2\u7f18\u5173\u7cfb\u7a0b\u5ea6\u6700\u9ad8\u7684\u56db\u4f4d\u5206\u522b\u662f:\n[\u00271LZ6611\u0027, \u00271SM7461\u0027, \u00272B008\u0027, \u00272B032\u0027]\n\u4eb2\u7f18\u6307\u6570\u4e3a:\n[0.04853501656283056, 0.09500963435758267, 0.7825212394215938, 0.04408256878747034]"}, {"color": "blue", "id": "2B032", "label": "2B032", "node_size": 1000.0, "shape": "dot", "size": 10, "title": "\u8be5\u4e2a\u4f53\u5728\u4ea4\u914d\u8fc7\u7a0b\u51fa\u73b0\u4e86\n1\u6b21\n\u8be5\u4e2a\u4f53\u4eb2\u7f18\u5173\u7cfb\u7a0b\u5ea6\u6700\u9ad8\u7684\u56db\u4f4d\u5206\u522b\u662f:\n[\u00271NP6502\u0027, \u00271NP6508\u0027, \u00271NP6511\u0027, \u00272B032\u0027]\n\u4eb2\u7f18\u6307\u6570\u4e3a:\n[0.04702510251214099, 0.04716583661313103, 0.1664009568759971, 0.8347727242053709]"}, {"color": "blue", "id": "2B050", "label": "2B050", "node_size": 1000.0, "shape": "dot", "size": 10, "title": "\u8be5\u4e2a\u4f53\u5728\u4ea4\u914d\u8fc7\u7a0b\u51fa\u73b0\u4e86\n1\u6b21\n\u8be5\u4e2a\u4f53\u4eb2\u7f18\u5173\u7cfb\u7a0b\u5ea6\u6700\u9ad8\u7684\u56db\u4f4d\u5206\u522b\u662f:\n[\u00271NP6508\u0027, \u00271NP6510\u0027, \u00272A027\u0027, \u00272B050\u0027]\n\u4eb2\u7f18\u6307\u6570\u4e3a:\n[0.1415002574357271, 0.15418966067628165, 0.1606422827470588, 0.8852444938122054]"}, {"color": "blue", "id": "2B059", "label": "2B059", "node_size": 1000.0, "shape": "dot", "size": 10, "title": "\u8be5\u4e2a\u4f53\u5728\u4ea4\u914d\u8fc7\u7a0b\u51fa\u73b0\u4e86\n1\u6b21\n\u8be5\u4e2a\u4f53\u4eb2\u7f18\u5173\u7cfb\u7a0b\u5ea6\u6700\u9ad8\u7684\u56db\u4f4d\u5206\u522b\u662f:\n[\u00271NP6505\u0027, \u00271NP6544-3\u0027, \u00271NP6548\u0027, \u00272B059\u0027]\n\u4eb2\u7f18\u6307\u6570\u4e3a:\n[0.14351987685736065, 0.14344695763405016, 0.04171172177355687, 0.8427423091850916]"}, {"color": "grey", "id": "2D058", "label": "2D058", "shape": "dot", "size": 10, "title": "\u8be5\u4e2a\u4f53\u5728\u4ea4\u914d\u8fc7\u7a0b\u51fa\u73b0\u4e86\n1\u6b21\n\u8be5\u4e2a\u4f53\u4eb2\u7f18\u5173\u7cfb\u7a0b\u5ea6\u6700\u9ad8\u7684\u56db\u4f4d\u5206\u522b\u662f:\n[\u00271NP6508\u0027, \u00271NP6538\u0027, \u00272D058\u0027, \u00272D103\u0027]\n\u4eb2\u7f18\u6307\u6570\u4e3a:\n[0.12431125198873708, 0.183236547154009, 0.8865969023405428, 0.19521523103135868]", "value": 1000.0}, {"color": "yellow", "id": "1NP6515", "label": "1NP6515", "shape": "dot", "size": 10, "title": "\u8be5\u4e2a\u4f53\u5728\u4ea4\u914d\u8fc7\u7a0b\u51fa\u73b0\u4e86\n2\u6b21\n\u8be5\u4e2a\u4f53\u4eb2\u7f18\u5173\u7cfb\u7a0b\u5ea6\u6700\u9ad8\u7684\u56db\u4f4d\u5206\u522b\u662f:\n[\u00271NP6502\u0027, \u00271NP6508\u0027, \u00271NP6515\u0027, \u00271NP6516\u0027]\n\u4eb2\u7f18\u6307\u6570\u4e3a:\n[0.2617365216889141, 0.1393953225228203, 0.8511377424289452, 0.3336086249530019]", "value": 2000.0}, {"color": "blue", "id": "2C006", "label": "2C006", "node_size": 1000.0, "shape": "dot", "size": 10, "title": "\u8be5\u4e2a\u4f53\u5728\u4ea4\u914d\u8fc7\u7a0b\u51fa\u73b0\u4e86\n1\u6b21\n\u8be5\u4e2a\u4f53\u4eb2\u7f18\u5173\u7cfb\u7a0b\u5ea6\u6700\u9ad8\u7684\u56db\u4f4d\u5206\u522b\u662f:\n[\u00271NP6521\u0027, \u00271NP6535\u0027, \u00271NP6543-2\u0027, \u00272C006\u0027]\n\u4eb2\u7f18\u6307\u6570\u4e3a:\n[0.09454708341771408, 0.17493056149074648, 0.1024782642731574, 0.8489725276247636]"}, {"color": "yellow", "id": "1NP6519", "label": "1NP6519", "shape": "dot", "size": 10, "title": "\u8be5\u4e2a\u4f53\u5728\u4ea4\u914d\u8fc7\u7a0b\u51fa\u73b0\u4e86\n2\u6b21\n\u8be5\u4e2a\u4f53\u4eb2\u7f18\u5173\u7cfb\u7a0b\u5ea6\u6700\u9ad8\u7684\u56db\u4f4d\u5206\u522b\u662f:\n[\u00271NP6504\u0027, \u00271NP6519\u0027, \u00271NP6524\u0027, \u00272A012\u0027]\n\u4eb2\u7f18\u6307\u6570\u4e3a:\n[0.2762165779899022, 0.8534303228098411, 0.07855735613011336, 0.06131511965010867]", "value": 2000.0}, {"color": "blue", "id": "2C007", "label": "2C007", "node_size": 2000.0, "shape": "dot", "size": 10, "title": "\u8be5\u4e2a\u4f53\u5728\u4ea4\u914d\u8fc7\u7a0b\u51fa\u73b0\u4e86\n2\u6b21\n\u8be5\u4e2a\u4f53\u4eb2\u7f18\u5173\u7cfb\u7a0b\u5ea6\u6700\u9ad8\u7684\u56db\u4f4d\u5206\u522b\u662f:\n[\u00272A019\u0027, \u00272A023\u0027, \u00272B050\u0027, \u00272C007\u0027]\n\u4eb2\u7f18\u6307\u6570\u4e3a:\n[0.10582015227749454, 0.09947447840090756, 0.11235760371138923, 0.8445234827464982]"}, {"color": "yellow", "id": "1NP6524", "label": "1NP6524", "shape": "dot", "size": 10, "title": "\u8be5\u4e2a\u4f53\u5728\u4ea4\u914d\u8fc7\u7a0b\u51fa\u73b0\u4e86\n2\u6b21\n\u8be5\u4e2a\u4f53\u4eb2\u7f18\u5173\u7cfb\u7a0b\u5ea6\u6700\u9ad8\u7684\u56db\u4f4d\u5206\u522b\u662f:\n[\u00271NP6515\u0027, \u00271NP6519\u0027, \u00271NP6524\u0027, \u00272A027\u0027]\n\u4eb2\u7f18\u6307\u6570\u4e3a:\n[0.06004167000128215, 0.07855735613011336, 0.8470197508245056, 0.15295392290524137]", "value": 2000.0}, {"color": "grey", "id": "2D014", "label": "2D014", "shape": "dot", "size": 10, "title": "\u8be5\u4e2a\u4f53\u5728\u4ea4\u914d\u8fc7\u7a0b\u51fa\u73b0\u4e86\n1\u6b21\n\u8be5\u4e2a\u4f53\u4eb2\u7f18\u5173\u7cfb\u7a0b\u5ea6\u6700\u9ad8\u7684\u56db\u4f4d\u5206\u522b\u662f:\n[\u00271NP6508\u0027, \u00271NP6518\u0027, \u00271NP6526\u0027, \u00272D014\u0027]\n\u4eb2\u7f18\u6307\u6570\u4e3a:\n[0.09547315755376252, 0.09986386705338698, 0.09110237930851077, 0.8249101561884996]", "value": 1000.0}, {"color": "yellow", "id": "1NP6526", "label": "1NP6526", "shape": "dot", "size": 10, "title": "\u8be5\u4e2a\u4f53\u5728\u4ea4\u914d\u8fc7\u7a0b\u51fa\u73b0\u4e86\n2\u6b21\n\u8be5\u4e2a\u4f53\u4eb2\u7f18\u5173\u7cfb\u7a0b\u5ea6\u6700\u9ad8\u7684\u56db\u4f4d\u5206\u522b\u662f:\n[\u00271NP6508\u0027, \u00271NP6510\u0027, \u00271NP6518\u0027, \u00271NP6526\u0027]\n\u4eb2\u7f18\u6307\u6570\u4e3a:\n[0.24338032254079967, 0.2521807005381069, 0.23069578058179868, 0.8446036938921404]", "value": 2000.0}, {"color": "blue", "id": "2C010", "label": "2C010", "node_size": 1000.0, "shape": "dot", "size": 10, "title": "\u8be5\u4e2a\u4f53\u5728\u4ea4\u914d\u8fc7\u7a0b\u51fa\u73b0\u4e86\n1\u6b21\n\u8be5\u4e2a\u4f53\u4eb2\u7f18\u5173\u7cfb\u7a0b\u5ea6\u6700\u9ad8\u7684\u56db\u4f4d\u5206\u522b\u662f:\n[\u00271NP6522\u0027, \u00271SM7461\u0027, \u00272C010\u0027, \u00272D103\u0027]\n\u4eb2\u7f18\u6307\u6570\u4e3a:\n[0.04055716740446835, 0.044510641574045766, 0.8558609635868668, 0.04140181507448622]"}, {"color": "yellow", "id": "1NP6538", "label": "1NP6538", "shape": "dot", "size": 10, "title": "\u8be5\u4e2a\u4f53\u5728\u4ea4\u914d\u8fc7\u7a0b\u51fa\u73b0\u4e86\n2\u6b21\n\u8be5\u4e2a\u4f53\u4eb2\u7f18\u5173\u7cfb\u7a0b\u5ea6\u6700\u9ad8\u7684\u56db\u4f4d\u5206\u522b\u662f:\n[\u00271NP6538\u0027, \u00271NP6539\u0027, \u00272D058\u0027, \u00272D103\u0027]\n\u4eb2\u7f18\u6307\u6570\u4e3a:\n[0.8407919630256013, 0.0902975941472371, 0.183236547154009, 0.19042103516274786]", "value": 2000.0}, {"color": "blue", "id": "2C021", "label": "2C021", "node_size": 1000.0, "shape": "dot", "size": 10, "title": "\u8be5\u4e2a\u4f53\u5728\u4ea4\u914d\u8fc7\u7a0b\u51fa\u73b0\u4e86\n1\u6b21\n\u8be5\u4e2a\u4f53\u4eb2\u7f18\u5173\u7cfb\u7a0b\u5ea6\u6700\u9ad8\u7684\u56db\u4f4d\u5206\u522b\u662f:\n[\u00271NP6510\u0027, \u00271NP6516\u0027, \u00272B050\u0027, \u00272C021\u0027]\n\u4eb2\u7f18\u6307\u6570\u4e3a:\n[0.1173268057159461, 0.11594498643420496, 0.12283536690892459, 0.8168661936009992]"}, {"color": "yellow", "id": "1NP6540", "label": "1NP6540", "shape": "dot", "size": 10, "title": "\u8be5\u4e2a\u4f53\u5728\u4ea4\u914d\u8fc7\u7a0b\u51fa\u73b0\u4e86\n3\u6b21\n\u8be5\u4e2a\u4f53\u4eb2\u7f18\u5173\u7cfb\u7a0b\u5ea6\u6700\u9ad8\u7684\u56db\u4f4d\u5206\u522b\u662f:\n[\u00271NP6540\u0027, \u00271SM7411\u0027, \u00272D003\u0027, \u00272D008\u0027]\n\u4eb2\u7f18\u6307\u6570\u4e3a:\n[0.8430242635152263, 0.04916746929301359, 0.12693585789977188, 0.12561334625299045]", "value": 3000.0}, {"color": "grey", "id": "2D003", "label": "2D003", "shape": "dot", "size": 10, "title": "\u8be5\u4e2a\u4f53\u5728\u4ea4\u914d\u8fc7\u7a0b\u51fa\u73b0\u4e86\n1\u6b21\n\u8be5\u4e2a\u4f53\u4eb2\u7f18\u5173\u7cfb\u7a0b\u5ea6\u6700\u9ad8\u7684\u56db\u4f4d\u5206\u522b\u662f:\n[\u00271JOX6546\u0027, \u00271JY7491\u0027, \u00271NP6540\u0027, \u00272D003\u0027]\n\u4eb2\u7f18\u6307\u6570\u4e3a:\n[0.04780679658603267, 0.04561508779738603, 0.12693585789977188, 0.8625476563644743]", "value": 1000.0}, {"color": "grey", "id": "2D008", "label": "2D008", "shape": "dot", "size": 10, "title": "\u8be5\u4e2a\u4f53\u5728\u4ea4\u914d\u8fc7\u7a0b\u51fa\u73b0\u4e86\n1\u6b21\n\u8be5\u4e2a\u4f53\u4eb2\u7f18\u5173\u7cfb\u7a0b\u5ea6\u6700\u9ad8\u7684\u56db\u4f4d\u5206\u522b\u662f:\n[\u00271NP6540\u0027, \u00271NP6547\u0027, \u00271NP6548\u0027, \u00272D008\u0027]\n\u4eb2\u7f18\u6307\u6570\u4e3a:\n[0.12561334625299045, 0.14921389594162715, 0.1449736431061014, 0.8521853486038434]", "value": 1000.0}, {"color": "yellow", "id": "1NP6545", "label": "1NP6545", "shape": "dot", "size": 10, "title": "\u8be5\u4e2a\u4f53\u5728\u4ea4\u914d\u8fc7\u7a0b\u51fa\u73b0\u4e86\n3\u6b21\n\u8be5\u4e2a\u4f53\u4eb2\u7f18\u5173\u7cfb\u7a0b\u5ea6\u6700\u9ad8\u7684\u56db\u4f4d\u5206\u522b\u662f:\n[\u00271NP6527\u0027, \u00271NP6545\u0027, \u00272A023\u0027, \u00273N166\u0027]\n\u4eb2\u7f18\u6307\u6570\u4e3a:\n[0.13863307357514448, 0.8481290952751406, 0.16647922350901567, 0.11770233971599739]", "value": 3000.0}, {"color": "blue", "id": "2B014", "label": "2B014", "node_size": 1000.0, "shape": "dot", "size": 10, "title": "\u8be5\u4e2a\u4f53\u5728\u4ea4\u914d\u8fc7\u7a0b\u51fa\u73b0\u4e86\n1\u6b21\n\u8be5\u4e2a\u4f53\u4eb2\u7f18\u5173\u7cfb\u7a0b\u5ea6\u6700\u9ad8\u7684\u56db\u4f4d\u5206\u522b\u662f:\n[\u00271JY7438\u0027, \u00271NP6508\u0027, \u00272B014\u0027, \u00272B056\u0027]\n\u4eb2\u7f18\u6307\u6570\u4e3a:\n[0.04513264254888779, 0.0421774325464359, 0.8622501459333651, 0.06636428973622713]"}, {"color": "yellow", "id": "1NP6547", "label": "1NP6547", "shape": "dot", "size": 10, "title": "\u8be5\u4e2a\u4f53\u5728\u4ea4\u914d\u8fc7\u7a0b\u51fa\u73b0\u4e86\n4\u6b21\n\u8be5\u4e2a\u4f53\u4eb2\u7f18\u5173\u7cfb\u7a0b\u5ea6\u6700\u9ad8\u7684\u56db\u4f4d\u5206\u522b\u662f:\n[\u00271NP6508\u0027, \u00271NP6547\u0027, \u00271NP6548\u0027, \u00272D008\u0027]\n\u4eb2\u7f18\u6307\u6570\u4e3a:\n[0.14180311527654368, 0.859295459004807, 0.3096194158041267, 0.14921389594162715]", "value": 4000.0}, {"color": "blue", "id": "2C016", "label": "2C016", "node_size": 1000.0, "shape": "dot", "size": 10, "title": "\u8be5\u4e2a\u4f53\u5728\u4ea4\u914d\u8fc7\u7a0b\u51fa\u73b0\u4e86\n1\u6b21\n\u8be5\u4e2a\u4f53\u4eb2\u7f18\u5173\u7cfb\u7a0b\u5ea6\u6700\u9ad8\u7684\u56db\u4f4d\u5206\u522b\u662f:\n[\u00271NP6547\u0027, \u00271NP6548\u0027, \u00272C016\u0027, \u00272D008\u0027]\n\u4eb2\u7f18\u6307\u6570\u4e3a:\n[0.09531273526247955, 0.10559556106969682, 0.8507235612405388, 0.07364940627313817]"}, {"color": "grey", "id": "2D103", "label": "2D103", "shape": "dot", "size": 10, "title": "\u8be5\u4e2a\u4f53\u5728\u4ea4\u914d\u8fc7\u7a0b\u51fa\u73b0\u4e86\n1\u6b21\n\u8be5\u4e2a\u4f53\u4eb2\u7f18\u5173\u7cfb\u7a0b\u5ea6\u6700\u9ad8\u7684\u56db\u4f4d\u5206\u522b\u662f:\n[\u00271NP6517\u0027, \u00271NP6538\u0027, \u00272D058\u0027, \u00272D103\u0027]\n\u4eb2\u7f18\u6307\u6570\u4e3a:\n[0.09464236453617492, 0.19042103516274786, 0.19521523103135868, 0.8686383560235506]", "value": 1000.0}, {"color": "yellow", "id": "1NP6548", "label": "1NP6548", "shape": "dot", "size": 10, "title": "\u8be5\u4e2a\u4f53\u5728\u4ea4\u914d\u8fc7\u7a0b\u51fa\u73b0\u4e86\n4\u6b21\n\u8be5\u4e2a\u4f53\u4eb2\u7f18\u5173\u7cfb\u7a0b\u5ea6\u6700\u9ad8\u7684\u56db\u4f4d\u5206\u522b\u662f:\n[\u00271NP6508\u0027, \u00271NP6547\u0027, \u00271NP6548\u0027, \u00272D008\u0027]\n\u4eb2\u7f18\u6307\u6570\u4e3a:\n[0.13835282069355204, 0.3096194158041267, 0.8572561513928842, 0.1449736431061014]", "value": 4000.0}, {"color": "yellow", "id": "2A002", "label": "2A002", "shape": "dot", "size": 10, "title": "\u8be5\u4e2a\u4f53\u5728\u4ea4\u914d\u8fc7\u7a0b\u51fa\u73b0\u4e86\n2\u6b21\n\u8be5\u4e2a\u4f53\u4eb2\u7f18\u5173\u7cfb\u7a0b\u5ea6\u6700\u9ad8\u7684\u56db\u4f4d\u5206\u522b\u662f:\n[\u00272A001\u0027, \u00272A002\u0027, \u00272B050\u0027, \u00272D103\u0027]\n\u4eb2\u7f18\u6307\u6570\u4e3a:\n[0.31566223183989756, 0.835003635079185, 0.04647456237614356, 0.043475151657290864]", "value": 2000.0}, {"color": "red", "id": "3N002", "label": "3N002", "shape": "dot", "size": 10, "title": "\u8be5\u4e2a\u4f53\u5728\u4ea4\u914d\u8fc7\u7a0b\u51fa\u73b0\u4e86\n1\u6b21\n\u8be5\u4e2a\u4f53\u4eb2\u7f18\u5173\u7cfb\u7a0b\u5ea6\u6700\u9ad8\u7684\u56db\u4f4d\u5206\u522b\u662f:\n[\u00271JY7410\u0027, \u00271JY7411-1\u0027, \u00272B050\u0027, \u00273N002\u0027]\n\u4eb2\u7f18\u6307\u6570\u4e3a:\n[0.05937425298965098, 0.05117837535358951, 0.0653351194854947, 0.9019823723309777]", "value": 1000.0}, {"color": "yellow", "id": "2A003", "label": "2A003", "shape": "dot", "size": 10, "title": "\u8be5\u4e2a\u4f53\u5728\u4ea4\u914d\u8fc7\u7a0b\u51fa\u73b0\u4e86\n2\u6b21\n\u8be5\u4e2a\u4f53\u4eb2\u7f18\u5173\u7cfb\u7a0b\u5ea6\u6700\u9ad8\u7684\u56db\u4f4d\u5206\u522b\u662f:\n[\u00271NP6505\u0027, \u00271SM7404\u0027, \u00272A003\u0027, \u00272A023\u0027]\n\u4eb2\u7f18\u6307\u6570\u4e3a:\n[0.044532237331220526, 0.042549320585320655, 0.8017626779406976, 0.04895676968338591]", "value": 2000.0}, {"color": "red", "id": "3N146", "label": "3N146", "shape": "dot", "size": 10, "title": "\u8be5\u4e2a\u4f53\u5728\u4ea4\u914d\u8fc7\u7a0b\u51fa\u73b0\u4e86\n1\u6b21\n\u8be5\u4e2a\u4f53\u4eb2\u7f18\u5173\u7cfb\u7a0b\u5ea6\u6700\u9ad8\u7684\u56db\u4f4d\u5206\u522b\u662f:\n[\u00271NP6508\u0027, \u00272D058\u0027, \u00273N060\u0027, \u00273N146\u0027]\n\u4eb2\u7f18\u6307\u6570\u4e3a:\n[0.0488155125084995, 0.055037709833614515, 0.041863673767861494, 0.8650162151376181]", "value": 1000.0}, {"color": "yellow", "id": "2A009", "label": "2A009", "shape": "dot", "size": 10, "title": "\u8be5\u4e2a\u4f53\u5728\u4ea4\u914d\u8fc7\u7a0b\u51fa\u73b0\u4e86\n3\u6b21\n\u8be5\u4e2a\u4f53\u4eb2\u7f18\u5173\u7cfb\u7a0b\u5ea6\u6700\u9ad8\u7684\u56db\u4f4d\u5206\u522b\u662f:\n[\u00271JOX6546\u0027, \u00271LZ6611\u0027, \u00271LZ7302\u0027, \u00272A009\u0027]\n\u4eb2\u7f18\u6307\u6570\u4e3a:\n[0.051087918570943074, 0.03802346745849396, 0.033579040797698245, 0.8389709269554549]", "value": 3000.0}, {"color": "red", "id": "3N012", "label": "3N012", "shape": "dot", "size": 10, "title": "\u8be5\u4e2a\u4f53\u5728\u4ea4\u914d\u8fc7\u7a0b\u51fa\u73b0\u4e86\n1\u6b21\n\u8be5\u4e2a\u4f53\u4eb2\u7f18\u5173\u7cfb\u7a0b\u5ea6\u6700\u9ad8\u7684\u56db\u4f4d\u5206\u522b\u662f:\n[\u00271NP6510\u0027, \u00271NP6547\u0027, \u00271NP6548\u0027, \u00273N012\u0027]\n\u4eb2\u7f18\u6307\u6570\u4e3a:\n[0.10892164990898141, 0.12676474078906957, 0.12398287241976005, 0.858816622771732]", "value": 1000.0}, {"color": "red", "id": "3N060", "label": "3N060", "shape": "dot", "size": 10, "title": "\u8be5\u4e2a\u4f53\u5728\u4ea4\u914d\u8fc7\u7a0b\u51fa\u73b0\u4e86\n1\u6b21\n\u8be5\u4e2a\u4f53\u4eb2\u7f18\u5173\u7cfb\u7a0b\u5ea6\u6700\u9ad8\u7684\u56db\u4f4d\u5206\u522b\u662f:\n[\u00271LZ7311\u0027, \u00271SM7441\u0027, \u00273N060\u0027, \u00273N146\u0027]\n\u4eb2\u7f18\u6307\u6570\u4e3a:\n[0.05189416211668342, 0.04433028802839044, 0.8554438656295347, 0.041863673767861494]", "value": 1000.0}, {"color": "yellow", "id": "2A011", "label": "2A011", "shape": "dot", "size": 10, "title": "\u8be5\u4e2a\u4f53\u5728\u4ea4\u914d\u8fc7\u7a0b\u51fa\u73b0\u4e86\n2\u6b21\n\u8be5\u4e2a\u4f53\u4eb2\u7f18\u5173\u7cfb\u7a0b\u5ea6\u6700\u9ad8\u7684\u56db\u4f4d\u5206\u522b\u662f:\n[\u00271NP6508\u0027, \u00271NP6538\u0027, \u00272A011\u0027, \u00273N075\u0027]\n\u4eb2\u7f18\u6307\u6570\u4e3a:\n[0.04803187392198612, 0.04136535546283018, 0.8857855544491762, 0.1588538172633219]", "value": 2000.0}, {"color": "red", "id": "3N075", "label": "3N075", "shape": "dot", "size": 10, "title": "\u8be5\u4e2a\u4f53\u5728\u4ea4\u914d\u8fc7\u7a0b\u51fa\u73b0\u4e86\n1\u6b21\n\u8be5\u4e2a\u4f53\u4eb2\u7f18\u5173\u7cfb\u7a0b\u5ea6\u6700\u9ad8\u7684\u56db\u4f4d\u5206\u522b\u662f:\n[\u00271NP6508\u0027, \u00271NP6517\u0027, \u00272A011\u0027, \u00273N075\u0027]\n\u4eb2\u7f18\u6307\u6570\u4e3a:\n[0.05652696343769946, 0.04695510005776197, 0.1588538172633219, 0.8820423676525502]", "value": 1000.0}, {"color": "yellow", "id": "2A015", "label": "2A015", "shape": "dot", "size": 10, "title": "\u8be5\u4e2a\u4f53\u5728\u4ea4\u914d\u8fc7\u7a0b\u51fa\u73b0\u4e86\n3\u6b21\n\u8be5\u4e2a\u4f53\u4eb2\u7f18\u5173\u7cfb\u7a0b\u5ea6\u6700\u9ad8\u7684\u56db\u4f4d\u5206\u522b\u662f:\n[\u00272A015\u0027, \u00273N008\u0027, \u00273N132\u0027, \u00273N166\u0027]\n\u4eb2\u7f18\u6307\u6570\u4e3a:\n[0.8337722724615432, 0.19633040901985754, 0.1665441216177633, 0.19827006035992753]", "value": 3000.0}, {"color": "red", "id": "3N132", "label": "3N132", "shape": "dot", "size": 10, "title": "\u8be5\u4e2a\u4f53\u5728\u4ea4\u914d\u8fc7\u7a0b\u51fa\u73b0\u4e86\n1\u6b21\n\u8be5\u4e2a\u4f53\u4eb2\u7f18\u5173\u7cfb\u7a0b\u5ea6\u6700\u9ad8\u7684\u56db\u4f4d\u5206\u522b\u662f:\n[\u00272A008\u0027, \u00272A015\u0027, \u00272A024\u0027, \u00273N132\u0027]\n\u4eb2\u7f18\u6307\u6570\u4e3a:\n[0.08037037108569867, 0.1665441216177633, 0.0802449500216035, 0.858469527268772]", "value": 1000.0}, {"color": "red", "id": "3N166", "label": "3N166", "shape": "dot", "size": 10, "title": "\u8be5\u4e2a\u4f53\u5728\u4ea4\u914d\u8fc7\u7a0b\u51fa\u73b0\u4e86\n1\u6b21\n\u8be5\u4e2a\u4f53\u4eb2\u7f18\u5173\u7cfb\u7a0b\u5ea6\u6700\u9ad8\u7684\u56db\u4f4d\u5206\u522b\u662f:\n[\u00271NP6545\u0027, \u00272A015\u0027, \u00273N008\u0027, \u00273N166\u0027]\n\u4eb2\u7f18\u6307\u6570\u4e3a:\n[0.11770233971599739, 0.19827006035992753, 0.11890331932392674, 0.8104157591069254]", "value": 1000.0}, {"color": "yellow", "id": "2A018", "label": "2A018", "shape": "dot", "size": 10, "title": "\u8be5\u4e2a\u4f53\u5728\u4ea4\u914d\u8fc7\u7a0b\u51fa\u73b0\u4e86\n2\u6b21\n\u8be5\u4e2a\u4f53\u4eb2\u7f18\u5173\u7cfb\u7a0b\u5ea6\u6700\u9ad8\u7684\u56db\u4f4d\u5206\u522b\u662f:\n[\u00271NP6538\u0027, \u00272A018\u0027, \u00272D058\u0027, \u00273N053\u0027]\n\u4eb2\u7f18\u6307\u6570\u4e3a:\n[0.031347955628464, 0.8305312560494518, 0.037856239373034235, 0.043229207756396604]", "value": 2000.0}, {"color": "red", "id": "3N008", "label": "3N008", "shape": "dot", "size": 10, "title": "\u8be5\u4e2a\u4f53\u5728\u4ea4\u914d\u8fc7\u7a0b\u51fa\u73b0\u4e86\n1\u6b21\n\u8be5\u4e2a\u4f53\u4eb2\u7f18\u5173\u7cfb\u7a0b\u5ea6\u6700\u9ad8\u7684\u56db\u4f4d\u5206\u522b\u662f:\n[\u00271NP6518\u0027, \u00272A015\u0027, \u00273N008\u0027, \u00273N166\u0027]\n\u4eb2\u7f18\u6307\u6570\u4e3a:\n[0.05090780808936566, 0.19633040901985754, 0.8620765981818845, 0.11890331932392674]", "value": 1000.0}, {"color": "yellow", "id": "2A019", "label": "2A019", "shape": "dot", "size": 10, "title": "\u8be5\u4e2a\u4f53\u5728\u4ea4\u914d\u8fc7\u7a0b\u51fa\u73b0\u4e86\n2\u6b21\n\u8be5\u4e2a\u4f53\u4eb2\u7f18\u5173\u7cfb\u7a0b\u5ea6\u6700\u9ad8\u7684\u56db\u4f4d\u5206\u522b\u662f:\n[\u00271NP6503\u0027, \u00272A019\u0027, \u00272A023\u0027, \u00272C007\u0027]\n\u4eb2\u7f18\u6307\u6570\u4e3a:\n[0.1628449294192043, 0.8540613171555567, 0.14349824415444457, 0.10582015227749454]", "value": 2000.0}, {"color": "red", "id": "4N152", "label": "4N152", "shape": "dot", "size": 10, "title": "\u8be5\u4e2a\u4f53\u5728\u4ea4\u914d\u8fc7\u7a0b\u51fa\u73b0\u4e86\n1\u6b21\n\u8be5\u4e2a\u4f53\u4eb2\u7f18\u5173\u7cfb\u7a0b\u5ea6\u6700\u9ad8\u7684\u56db\u4f4d\u5206\u522b\u662f:\n[\u00271NP6545\u0027, \u00272A023\u0027, \u00273N034\u0027, \u00274N152\u0027]\n\u4eb2\u7f18\u6307\u6570\u4e3a:\n[0.10029409047092089, 0.10165427704974629, 0.10109741724772799, 0.8399504751885921]", "value": 1000.0}, {"color": "yellow", "id": "2B056", "label": "2B056", "shape": "dot", "size": 10, "title": "\u8be5\u4e2a\u4f53\u5728\u4ea4\u914d\u8fc7\u7a0b\u51fa\u73b0\u4e86\n2\u6b21\n\u8be5\u4e2a\u4f53\u4eb2\u7f18\u5173\u7cfb\u7a0b\u5ea6\u6700\u9ad8\u7684\u56db\u4f4d\u5206\u522b\u662f:\n[\u00271NP6517\u0027, \u00272B014\u0027, \u00272B056\u0027, \u00272D058\u0027]\n\u4eb2\u7f18\u6307\u6570\u4e3a:\n[0.04710118156846165, 0.06636428973622713, 0.8621227803566486, 0.06927567431321327]", "value": 2000.0}, {"color": "red", "id": "3N053", "label": "3N053", "shape": "dot", "size": 10, "title": "\u8be5\u4e2a\u4f53\u5728\u4ea4\u914d\u8fc7\u7a0b\u51fa\u73b0\u4e86\n1\u6b21\n\u8be5\u4e2a\u4f53\u4eb2\u7f18\u5173\u7cfb\u7a0b\u5ea6\u6700\u9ad8\u7684\u56db\u4f4d\u5206\u522b\u662f:\n[\u00271NP6508\u0027, \u00271NP6510\u0027, \u00271NP6548\u0027, \u00273N053\u0027]\n\u4eb2\u7f18\u6307\u6570\u4e3a:\n[0.1094471544449757, 0.08373243340848312, 0.07989542387786776, 0.8701764655072488]", "value": 1000.0}, {"color": "red", "id": "3N006", "label": "3N006", "shape": "dot", "size": 10, "title": "\u8be5\u4e2a\u4f53\u5728\u4ea4\u914d\u8fc7\u7a0b\u51fa\u73b0\u4e86\n1\u6b21\n\u8be5\u4e2a\u4f53\u4eb2\u7f18\u5173\u7cfb\u7a0b\u5ea6\u6700\u9ad8\u7684\u56db\u4f4d\u5206\u522b\u662f:\n[\u00271JY7453\u0027, \u00271NP6508\u0027, \u00271NP6518\u0027, \u00273N006\u0027]\n\u4eb2\u7f18\u6307\u6570\u4e3a:\n[0.043129028410641965, 0.050061458970804315, 0.04390853490783489, 0.8435653241521924]", "value": 1000.0}, {"color": "red", "id": "3N016", "label": "3N016", "shape": "dot", "size": 10, "title": "\u8be5\u4e2a\u4f53\u5728\u4ea4\u914d\u8fc7\u7a0b\u51fa\u73b0\u4e86\n1\u6b21\n\u8be5\u4e2a\u4f53\u4eb2\u7f18\u5173\u7cfb\u7a0b\u5ea6\u6700\u9ad8\u7684\u56db\u4f4d\u5206\u522b\u662f:\n[\u00271NP6509\u0027, \u00271NP6515\u0027, \u00272C004\u0027, \u00273N016\u0027]\n\u4eb2\u7f18\u6307\u6570\u4e3a:\n[0.05770999324962025, 0.04645560337808335, 0.15660353003195043, 0.8497031782423461]", "value": 1000.0}, {"color": "red", "id": "3N034", "label": "3N034", "shape": "dot", "size": 10, "title": "\u8be5\u4e2a\u4f53\u5728\u4ea4\u914d\u8fc7\u7a0b\u51fa\u73b0\u4e86\n1\u6b21\n\u8be5\u4e2a\u4f53\u4eb2\u7f18\u5173\u7cfb\u7a0b\u5ea6\u6700\u9ad8\u7684\u56db\u4f4d\u5206\u522b\u662f:\n[\u00271NP6514\u0027, \u00271NP6527\u0027, \u00273N034\u0027, \u00274N152\u0027]\n\u4eb2\u7f18\u6307\u6570\u4e3a:\n[0.11873560511031131, 0.11160556345497606, 0.8201426973684364, 0.10109741724772799]", "value": 1000.0}, {"color": "grey", "id": "G1", "label": "G1", "shape": "dot", "size": 10, "title": "\u8be5\u4e2a\u4f53\u5728\u4ea4\u914d\u8fc7\u7a0b\u51fa\u73b0\u4e86\n257\u6b21\n\u8be5\u4e2a\u4f53\u4eb2\u7f18\u5173\u7cfb\u7a0b\u5ea6\u6700\u9ad8\u7684\u56db\u4f4d\u5206\u522b\u662f:\n[]\n\u4eb2\u7f18\u6307\u6570\u4e3a:\n[]", "value": 257000.0}, {"color": "yellow", "id": "1JOX6539", "label": "1JOX6539", "shape": "dot", "size": 10, "title": "\u8be5\u4e2a\u4f53\u5728\u4ea4\u914d\u8fc7\u7a0b\u51fa\u73b0\u4e86\n1\u6b21\n\u8be5\u4e2a\u4f53\u4eb2\u7f18\u5173\u7cfb\u7a0b\u5ea6\u6700\u9ad8\u7684\u56db\u4f4d\u5206\u522b\u662f:\n[\u00271JOX6539\u0027, \u00271NP6530-1\u0027, \u00272B050\u0027, \u00272C007\u0027]\n\u4eb2\u7f18\u6307\u6570\u4e3a:\n[0.8465093162613284, 0.04013354366277251, 0.04574832385770836, 0.04458988046337704]", "value": 1000.0}, {"color": "yellow", "id": "1JOX6546", "label": "1JOX6546", "shape": "dot", "size": 10, "title": "\u8be5\u4e2a\u4f53\u5728\u4ea4\u914d\u8fc7\u7a0b\u51fa\u73b0\u4e86\n1\u6b21\n\u8be5\u4e2a\u4f53\u4eb2\u7f18\u5173\u7cfb\u7a0b\u5ea6\u6700\u9ad8\u7684\u56db\u4f4d\u5206\u522b\u662f:\n[\u00271JOX6546\u0027, \u00271JY7442\u0027, \u00271LZ6611\u0027, \u00272B050\u0027]\n\u4eb2\u7f18\u6307\u6570\u4e3a:\n[0.8863912701308085, 0.4096378531380548, 0.05699562792525191, 0.058637974952549236]", "value": 1000.0}, {"color": "yellow", "id": "1JOX6554", "label": "1JOX6554", "shape": "dot", "size": 10, "title": "\u8be5\u4e2a\u4f53\u5728\u4ea4\u914d\u8fc7\u7a0b\u51fa\u73b0\u4e86\n1\u6b21\n\u8be5\u4e2a\u4f53\u4eb2\u7f18\u5173\u7cfb\u7a0b\u5ea6\u6700\u9ad8\u7684\u56db\u4f4d\u5206\u522b\u662f:\n[\u00271JOX6554\u0027, \u00271JY7442\u0027, \u00271JY7451\u0027, \u00271NP6507\u0027]\n\u4eb2\u7f18\u6307\u6570\u4e3a:\n[0.8388425891224236, 0.04211156218137773, 0.056682075265015175, 0.15261727915762277]", "value": 1000.0}, {"color": "yellow", "id": "1JY7401", "label": "1JY7401", "shape": "dot", "size": 10, "title": "\u8be5\u4e2a\u4f53\u5728\u4ea4\u914d\u8fc7\u7a0b\u51fa\u73b0\u4e86\n1\u6b21\n\u8be5\u4e2a\u4f53\u4eb2\u7f18\u5173\u7cfb\u7a0b\u5ea6\u6700\u9ad8\u7684\u56db\u4f4d\u5206\u522b\u662f:\n[\u00271JY7401\u0027, \u00271SM7406\u0027, \u00271SM7446\u0027, \u00271SM7461\u0027]\n\u4eb2\u7f18\u6307\u6570\u4e3a:\n[0.8551599667867775, 0.04074533594635099, 0.09508814405468106, 0.0478972533686797]", "value": 1000.0}, {"color": "yellow", "id": "1JY7402", "label": "1JY7402", "shape": "dot", "size": 10, "title": "\u8be5\u4e2a\u4f53\u5728\u4ea4\u914d\u8fc7\u7a0b\u51fa\u73b0\u4e86\n1\u6b21\n\u8be5\u4e2a\u4f53\u4eb2\u7f18\u5173\u7cfb\u7a0b\u5ea6\u6700\u9ad8\u7684\u56db\u4f4d\u5206\u522b\u662f:\n[\u00271JY7402\u0027, \u00271NP6518\u0027, \u00271NP6526\u0027, \u00272C004\u0027]\n\u4eb2\u7f18\u6307\u6570\u4e3a:\n[0.8635014398053696, 0.05742654358927784, 0.05768078861455514, 0.0675834991499859]", "value": 1000.0}, {"color": "yellow", "id": "1JY7403", "label": "1JY7403", "shape": "dot", "size": 10, "title": "\u8be5\u4e2a\u4f53\u5728\u4ea4\u914d\u8fc7\u7a0b\u51fa\u73b0\u4e86\n1\u6b21\n\u8be5\u4e2a\u4f53\u4eb2\u7f18\u5173\u7cfb\u7a0b\u5ea6\u6700\u9ad8\u7684\u56db\u4f4d\u5206\u522b\u662f:\n[\u00271JY7403\u0027, \u00271NP6510\u0027, \u00271SM7435\u0027, \u00272A008\u0027]\n\u4eb2\u7f18\u6307\u6570\u4e3a:\n[0.8384079905514917, 0.044538556997240526, 0.047397513624921936, 0.046483069618863726]", "value": 1000.0}, {"color": "yellow", "id": "1JY7405", "label": "1JY7405", "shape": "dot", "size": 10, "title": "\u8be5\u4e2a\u4f53\u5728\u4ea4\u914d\u8fc7\u7a0b\u51fa\u73b0\u4e86\n1\u6b21\n\u8be5\u4e2a\u4f53\u4eb2\u7f18\u5173\u7cfb\u7a0b\u5ea6\u6700\u9ad8\u7684\u56db\u4f4d\u5206\u522b\u662f:\n[\u00271JY7405\u0027, \u00271NP6510\u0027, \u00272A016\u0027, \u00272B050\u0027]\n\u4eb2\u7f18\u6307\u6570\u4e3a:\n[0.8162026286688716, 0.03981168987815417, 0.040024894020039906, 0.04171658305511097]", "value": 1000.0}, {"color": "yellow", "id": "1JY7406", "label": "1JY7406", "shape": "dot", "size": 10, "title": "\u8be5\u4e2a\u4f53\u5728\u4ea4\u914d\u8fc7\u7a0b\u51fa\u73b0\u4e86\n1\u6b21\n\u8be5\u4e2a\u4f53\u4eb2\u7f18\u5173\u7cfb\u7a0b\u5ea6\u6700\u9ad8\u7684\u56db\u4f4d\u5206\u522b\u662f:\n[\u00271JY7406\u0027, \u00271NP6510\u0027, \u00271NP6518\u0027, \u00271NP6528\u0027]\n\u4eb2\u7f18\u6307\u6570\u4e3a:\n[0.8819164604603009, 0.05833244340687625, 0.052533420641042335, 0.06232355556275632]", "value": 1000.0}, {"color": "yellow", "id": "1JY7408", "label": "1JY7408", "shape": "dot", "size": 10, "title": "\u8be5\u4e2a\u4f53\u5728\u4ea4\u914d\u8fc7\u7a0b\u51fa\u73b0\u4e86\n1\u6b21\n\u8be5\u4e2a\u4f53\u4eb2\u7f18\u5173\u7cfb\u7a0b\u5ea6\u6700\u9ad8\u7684\u56db\u4f4d\u5206\u522b\u662f:\n[\u00271JY7408\u0027, \u00271NP6514\u0027, \u00271NP6518\u0027, \u00272B050\u0027]\n\u4eb2\u7f18\u6307\u6570\u4e3a:\n[0.8512038558580812, 0.04645195741691759, 0.044342890414689896, 0.056665023833835045]", "value": 1000.0}, {"color": "yellow", "id": "1JY7410", "label": "1JY7410", "shape": "dot", "size": 10, "title": "\u8be5\u4e2a\u4f53\u5728\u4ea4\u914d\u8fc7\u7a0b\u51fa\u73b0\u4e86\n1\u6b21\n\u8be5\u4e2a\u4f53\u4eb2\u7f18\u5173\u7cfb\u7a0b\u5ea6\u6700\u9ad8\u7684\u56db\u4f4d\u5206\u522b\u662f:\n[\u00271JY7410\u0027, \u00271NP6530-1\u0027, \u00273N002\u0027, \u00273N133\u0027]\n\u4eb2\u7f18\u6307\u6570\u4e3a:\n[0.8480299251314328, 0.07267447625747109, 0.05937425298965098, 0.07104764838540702]", "value": 1000.0}, {"color": "yellow", "id": "1JY74103", "label": "1JY74103", "shape": "dot", "size": 10, "title": "\u8be5\u4e2a\u4f53\u5728\u4ea4\u914d\u8fc7\u7a0b\u51fa\u73b0\u4e86\n1\u6b21\n\u8be5\u4e2a\u4f53\u4eb2\u7f18\u5173\u7cfb\u7a0b\u5ea6\u6700\u9ad8\u7684\u56db\u4f4d\u5206\u522b\u662f:\n[\u00271JY74103\u0027, \u00271NP6508\u0027, \u00271NP6510\u0027, \u00272GXLW1153\u0027]\n\u4eb2\u7f18\u6307\u6570\u4e3a:\n[0.8497901951821645, 0.048589705980313716, 0.05321861827608643, 0.04949637193588602]", "value": 1000.0}, {"color": "yellow", "id": "1JY74108", "label": "1JY74108", "shape": "dot", "size": 10, "title": "\u8be5\u4e2a\u4f53\u5728\u4ea4\u914d\u8fc7\u7a0b\u51fa\u73b0\u4e86\n1\u6b21\n\u8be5\u4e2a\u4f53\u4eb2\u7f18\u5173\u7cfb\u7a0b\u5ea6\u6700\u9ad8\u7684\u56db\u4f4d\u5206\u522b\u662f:\n[\u00271JY74108\u0027, \u00271NP6518\u0027, \u00271NP6524\u0027, \u00272A012\u0027]\n\u4eb2\u7f18\u6307\u6570\u4e3a:\n[0.8481354149411532, 0.0491280929124251, 0.04783600122109769, 0.061462902609351555]", "value": 1000.0}, {"color": "yellow", "id": "1JY7411-1", "label": "1JY7411-1", "shape": "dot", "size": 10, "title": "\u8be5\u4e2a\u4f53\u5728\u4ea4\u914d\u8fc7\u7a0b\u51fa\u73b0\u4e86\n1\u6b21\n\u8be5\u4e2a\u4f53\u4eb2\u7f18\u5173\u7cfb\u7a0b\u5ea6\u6700\u9ad8\u7684\u56db\u4f4d\u5206\u522b\u662f:\n[\u00271JY7411-1\u0027, \u00271LZ7311\u0027, \u00272A023\u0027, \u00273N002\u0027]\n\u4eb2\u7f18\u6307\u6570\u4e3a:\n[0.8849299688956634, 0.3924646468561167, 0.047246533886927476, 0.05117837535358951]", "value": 1000.0}, {"color": "yellow", "id": "1JY74115", "label": "1JY74115", "shape": "dot", "size": 10, "title": "\u8be5\u4e2a\u4f53\u5728\u4ea4\u914d\u8fc7\u7a0b\u51fa\u73b0\u4e86\n1\u6b21\n\u8be5\u4e2a\u4f53\u4eb2\u7f18\u5173\u7cfb\u7a0b\u5ea6\u6700\u9ad8\u7684\u56db\u4f4d\u5206\u522b\u662f:\n[\u00271JY74115\u0027, \u00271NP6510\u0027, \u00271NP6518\u0027, \u00273N012\u0027]\n\u4eb2\u7f18\u6307\u6570\u4e3a:\n[0.8201154741917364, 0.036700712747635096, 0.03630986571068923, 0.03902829435571792]", "value": 1000.0}, {"color": "yellow", "id": "1JY74118", "label": "1JY74118", "shape": "dot", "size": 10, "title": "\u8be5\u4e2a\u4f53\u5728\u4ea4\u914d\u8fc7\u7a0b\u51fa\u73b0\u4e86\n1\u6b21\n\u8be5\u4e2a\u4f53\u4eb2\u7f18\u5173\u7cfb\u7a0b\u5ea6\u6700\u9ad8\u7684\u56db\u4f4d\u5206\u522b\u662f:\n[\u00271JY74118\u0027, \u00271NP6535\u0027, \u00271SM7410\u0027, \u00272D103\u0027]\n\u4eb2\u7f18\u6307\u6570\u4e3a:\n[0.8278327586587978, 0.03899280700037316, 0.03719413282537215, 0.03821913404104522]", "value": 1000.0}, {"color": "yellow", "id": "1JY7417", "label": "1JY7417", "shape": "dot", "size": 10, "title": "\u8be5\u4e2a\u4f53\u5728\u4ea4\u914d\u8fc7\u7a0b\u51fa\u73b0\u4e86\n1\u6b21\n\u8be5\u4e2a\u4f53\u4eb2\u7f18\u5173\u7cfb\u7a0b\u5ea6\u6700\u9ad8\u7684\u56db\u4f4d\u5206\u522b\u662f:\n[\u00271JY7417\u0027, \u00271NP6502\u0027, \u00272D014\u0027, \u00272GXLW1169\u0027]\n\u4eb2\u7f18\u6307\u6570\u4e3a:\n[0.8725225199852431, 0.04750418180929323, 0.04636712805379951, 0.05488485947447982]", "value": 1000.0}, {"color": "yellow", "id": "1JY7428", "label": "1JY7428", "shape": "dot", "size": 10, "title": "\u8be5\u4e2a\u4f53\u5728\u4ea4\u914d\u8fc7\u7a0b\u51fa\u73b0\u4e86\n1\u6b21\n\u8be5\u4e2a\u4f53\u4eb2\u7f18\u5173\u7cfb\u7a0b\u5ea6\u6700\u9ad8\u7684\u56db\u4f4d\u5206\u522b\u662f:\n[\u00271JY7428\u0027, \u00271NP6525\u0027, \u00272A020\u0027, \u00272A021\u0027]\n\u4eb2\u7f18\u6307\u6570\u4e3a:\n[0.8311603058825549, 0.05765769752717309, 0.046600749578212475, 0.06497323401953517]", "value": 1000.0}, {"color": "yellow", "id": "1JY7434", "label": "1JY7434", "shape": "dot", "size": 10, "title": "\u8be5\u4e2a\u4f53\u5728\u4ea4\u914d\u8fc7\u7a0b\u51fa\u73b0\u4e86\n1\u6b21\n\u8be5\u4e2a\u4f53\u4eb2\u7f18\u5173\u7cfb\u7a0b\u5ea6\u6700\u9ad8\u7684\u56db\u4f4d\u5206\u522b\u662f:\n[\u00271JY7410\u0027, \u00271JY7434\u0027, \u00271NP6548\u0027, \u00271SM7406\u0027]\n\u4eb2\u7f18\u6307\u6570\u4e3a:\n[0.040029232227698455, 0.8462793776438249, 0.03620607734951041, 0.03606728776114195]", "value": 1000.0}, {"color": "yellow", "id": "1JY7436", "label": "1JY7436", "shape": "dot", "size": 10, "title": "\u8be5\u4e2a\u4f53\u5728\u4ea4\u914d\u8fc7\u7a0b\u51fa\u73b0\u4e86\n1\u6b21\n\u8be5\u4e2a\u4f53\u4eb2\u7f18\u5173\u7cfb\u7a0b\u5ea6\u6700\u9ad8\u7684\u56db\u4f4d\u5206\u522b\u662f:\n[\u00271JY7436\u0027, \u00272A019\u0027, \u00272HNJX29\u0027, \u00273N140\u0027]\n\u4eb2\u7f18\u6307\u6570\u4e3a:\n[0.891473253867418, 0.04264241412708106, 0.04028906772676197, 0.05063022891262878]", "value": 1000.0}, {"color": "yellow", "id": "1JY7438", "label": "1JY7438", "shape": "dot", "size": 10, "title": "\u8be5\u4e2a\u4f53\u5728\u4ea4\u914d\u8fc7\u7a0b\u51fa\u73b0\u4e86\n1\u6b21\n\u8be5\u4e2a\u4f53\u4eb2\u7f18\u5173\u7cfb\u7a0b\u5ea6\u6700\u9ad8\u7684\u56db\u4f4d\u5206\u522b\u662f:\n[\u00271JY7438\u0027, \u00271NP6505\u0027, \u00271NP6528\u0027, \u00272B014\u0027]\n\u4eb2\u7f18\u6307\u6570\u4e3a:\n[0.8566052257927944, 0.05018740310879513, 0.043137778717439165, 0.04513264254888779]", "value": 1000.0}, {"color": "yellow", "id": "1JY7439", "label": "1JY7439", "shape": "dot", "size": 10, "title": "\u8be5\u4e2a\u4f53\u5728\u4ea4\u914d\u8fc7\u7a0b\u51fa\u73b0\u4e86\n1\u6b21\n\u8be5\u4e2a\u4f53\u4eb2\u7f18\u5173\u7cfb\u7a0b\u5ea6\u6700\u9ad8\u7684\u56db\u4f4d\u5206\u522b\u662f:\n[\u00271JY7439\u0027, \u00271NP6528\u0027, \u00271SM7435\u0027, \u00272A008\u0027]\n\u4eb2\u7f18\u6307\u6570\u4e3a:\n[0.8315083736418238, 0.06297812712400998, 0.055310950802693305, 0.047259173218968324]", "value": 1000.0}, {"color": "yellow", "id": "1JY7442", "label": "1JY7442", "shape": "dot", "size": 10, "title": "\u8be5\u4e2a\u4f53\u5728\u4ea4\u914d\u8fc7\u7a0b\u51fa\u73b0\u4e86\n1\u6b21\n\u8be5\u4e2a\u4f53\u4eb2\u7f18\u5173\u7cfb\u7a0b\u5ea6\u6700\u9ad8\u7684\u56db\u4f4d\u5206\u522b\u662f:\n[\u00271JOX6546\u0027, \u00271JY7442\u0027, \u00272B050\u0027, \u00272D058\u0027]\n\u4eb2\u7f18\u6307\u6570\u4e3a:\n[0.4096378531380548, 0.8808343391863704, 0.07211125984369454, 0.04725017984809346]", "value": 1000.0}, {"color": "yellow", "id": "1JY7451", "label": "1JY7451", "shape": "dot", "size": 10, "title": "\u8be5\u4e2a\u4f53\u5728\u4ea4\u914d\u8fc7\u7a0b\u51fa\u73b0\u4e86\n1\u6b21\n\u8be5\u4e2a\u4f53\u4eb2\u7f18\u5173\u7cfb\u7a0b\u5ea6\u6700\u9ad8\u7684\u56db\u4f4d\u5206\u522b\u662f:\n[\u00271JOX6554\u0027, \u00271JY7451\u0027, \u00272A017\u0027, \u00273N016\u0027]\n\u4eb2\u7f18\u6307\u6570\u4e3a:\n[0.056682075265015175, 0.8743693208476276, 0.042735021540685904, 0.04289131174264894]", "value": 1000.0}, {"color": "yellow", "id": "1JY7453", "label": "1JY7453", "shape": "dot", "size": 10, "title": "\u8be5\u4e2a\u4f53\u5728\u4ea4\u914d\u8fc7\u7a0b\u51fa\u73b0\u4e86\n1\u6b21\n\u8be5\u4e2a\u4f53\u4eb2\u7f18\u5173\u7cfb\u7a0b\u5ea6\u6700\u9ad8\u7684\u56db\u4f4d\u5206\u522b\u662f:\n[\u00271JY7453\u0027, \u00271NP6507\u0027, \u00272D058\u0027, \u00273N006\u0027]\n\u4eb2\u7f18\u6307\u6570\u4e3a:\n[0.8506209881997536, 0.03509405919401947, 0.04351938931943318, 0.043129028410641965]", "value": 1000.0}, {"color": "yellow", "id": "1JY7456", "label": "1JY7456", "shape": "dot", "size": 10, "title": "\u8be5\u4e2a\u4f53\u5728\u4ea4\u914d\u8fc7\u7a0b\u51fa\u73b0\u4e86\n1\u6b21\n\u8be5\u4e2a\u4f53\u4eb2\u7f18\u5173\u7cfb\u7a0b\u5ea6\u6700\u9ad8\u7684\u56db\u4f4d\u5206\u522b\u662f:\n[\u00271JY7456\u0027, \u00271NP6517\u0027, \u00271NP6528\u0027, \u00272D103\u0027]\n\u4eb2\u7f18\u6307\u6570\u4e3a:\n[0.8643759843569534, 0.0786261432641022, 0.08948041271799988, 0.07888840940394369]", "value": 1000.0}, {"color": "yellow", "id": "1JY7478", "label": "1JY7478", "shape": "dot", "size": 10, "title": "\u8be5\u4e2a\u4f53\u5728\u4ea4\u914d\u8fc7\u7a0b\u51fa\u73b0\u4e86\n1\u6b21\n\u8be5\u4e2a\u4f53\u4eb2\u7f18\u5173\u7cfb\u7a0b\u5ea6\u6700\u9ad8\u7684\u56db\u4f4d\u5206\u522b\u662f:\n[\u00271JY7478\u0027, \u00271SM7404\u0027, \u00272A020\u0027, \u00272C007\u0027]\n\u4eb2\u7f18\u6307\u6570\u4e3a:\n[0.8383744477087717, 0.04597169974511713, 0.04072852757924867, 0.038746826153737854]", "value": 1000.0}, {"color": "yellow", "id": "1JY7491", "label": "1JY7491", "shape": "dot", "size": 10, "title": "\u8be5\u4e2a\u4f53\u5728\u4ea4\u914d\u8fc7\u7a0b\u51fa\u73b0\u4e86\n1\u6b21\n\u8be5\u4e2a\u4f53\u4eb2\u7f18\u5173\u7cfb\u7a0b\u5ea6\u6700\u9ad8\u7684\u56db\u4f4d\u5206\u522b\u662f:\n[\u00271JY7491\u0027, \u00271NP6510\u0027, \u00271NP6517\u0027, \u00271NP6528\u0027]\n\u4eb2\u7f18\u6307\u6570\u4e3a:\n[0.8243574284758022, 0.045851832209069, 0.06355321673185521, 0.05543341815211425]", "value": 1000.0}, {"color": "yellow", "id": "1LZ6611", "label": "1LZ6611", "shape": "dot", "size": 10, "title": "\u8be5\u4e2a\u4f53\u5728\u4ea4\u914d\u8fc7\u7a0b\u51fa\u73b0\u4e86\n1\u6b21\n\u8be5\u4e2a\u4f53\u4eb2\u7f18\u5173\u7cfb\u7a0b\u5ea6\u6700\u9ad8\u7684\u56db\u4f4d\u5206\u522b\u662f:\n[\u00271JOX6539\u0027, \u00271JOX6546\u0027, \u00271LZ6611\u0027, \u00272B008\u0027]\n\u4eb2\u7f18\u6307\u6570\u4e3a:\n[0.03999666164128595, 0.05699562792525191, 0.8320659626360664, 0.04853501656283056]", "value": 1000.0}, {"color": "yellow", "id": "1LZ7302", "label": "1LZ7302", "shape": "dot", "size": 10, "title": "\u8be5\u4e2a\u4f53\u5728\u4ea4\u914d\u8fc7\u7a0b\u51fa\u73b0\u4e86\n1\u6b21\n\u8be5\u4e2a\u4f53\u4eb2\u7f18\u5173\u7cfb\u7a0b\u5ea6\u6700\u9ad8\u7684\u56db\u4f4d\u5206\u522b\u662f:\n[\u00271LZ7302\u0027, \u00271LZ7308\u0027, \u00271LZ7320\u0027, \u00271NP6508\u0027]\n\u4eb2\u7f18\u6307\u6570\u4e3a:\n[0.8179852606147433, 0.11845486610056408, 0.07000441736390636, 0.05124518102921745]", "value": 1000.0}, {"color": "yellow", "id": "1LZ7305", "label": "1LZ7305", "shape": "dot", "size": 10, "title": "\u8be5\u4e2a\u4f53\u5728\u4ea4\u914d\u8fc7\u7a0b\u51fa\u73b0\u4e86\n1\u6b21\n\u8be5\u4e2a\u4f53\u4eb2\u7f18\u5173\u7cfb\u7a0b\u5ea6\u6700\u9ad8\u7684\u56db\u4f4d\u5206\u522b\u662f:\n[\u00271LZ7305\u0027, \u00271NP6536\u0027, \u00271NP6540\u0027, \u00272C010\u0027]\n\u4eb2\u7f18\u6307\u6570\u4e3a:\n[0.8553471261266011, 0.037136040510801244, 0.03979078636747157, 0.036022357852506896]", "value": 1000.0}, {"color": "yellow", "id": "1LZ7308", "label": "1LZ7308", "shape": "dot", "size": 10, "title": "\u8be5\u4e2a\u4f53\u5728\u4ea4\u914d\u8fc7\u7a0b\u51fa\u73b0\u4e86\n1\u6b21\n\u8be5\u4e2a\u4f53\u4eb2\u7f18\u5173\u7cfb\u7a0b\u5ea6\u6700\u9ad8\u7684\u56db\u4f4d\u5206\u522b\u662f:\n[\u00271LZ7302\u0027, \u00271LZ7308\u0027, \u00271LZ7320\u0027, \u00271NP6510\u0027]\n\u4eb2\u7f18\u6307\u6570\u4e3a:\n[0.11845486610056408, 0.8110739766293448, 0.06120136566174331, 0.060545055706204845]", "value": 1000.0}, {"color": "yellow", "id": "1LZ7309", "label": "1LZ7309", "shape": "dot", "size": 10, "title": "\u8be5\u4e2a\u4f53\u5728\u4ea4\u914d\u8fc7\u7a0b\u51fa\u73b0\u4e86\n1\u6b21\n\u8be5\u4e2a\u4f53\u4eb2\u7f18\u5173\u7cfb\u7a0b\u5ea6\u6700\u9ad8\u7684\u56db\u4f4d\u5206\u522b\u662f:\n[\u00271LZ7309\u0027, \u00271NP6508\u0027, \u00271NP6510\u0027, \u00273N012\u0027]\n\u4eb2\u7f18\u6307\u6570\u4e3a:\n[0.8184271511080026, 0.044613420733173044, 0.04334802914465227, 0.05381825735577944]", "value": 1000.0}, {"color": "yellow", "id": "1LZ7311", "label": "1LZ7311", "shape": "dot", "size": 10, "title": "\u8be5\u4e2a\u4f53\u5728\u4ea4\u914d\u8fc7\u7a0b\u51fa\u73b0\u4e86\n1\u6b21\n\u8be5\u4e2a\u4f53\u4eb2\u7f18\u5173\u7cfb\u7a0b\u5ea6\u6700\u9ad8\u7684\u56db\u4f4d\u5206\u522b\u662f:\n[\u00271JY7411-1\u0027, \u00271LZ7311\u0027, \u00272B050\u0027, \u00273N060\u0027]\n\u4eb2\u7f18\u6307\u6570\u4e3a:\n[0.3924646468561167, 0.8562741725189646, 0.044164238317578576, 0.05189416211668342]", "value": 1000.0}, {"color": "yellow", "id": "1LZ7317", "label": "1LZ7317", "shape": "dot", "size": 10, "title": "\u8be5\u4e2a\u4f53\u5728\u4ea4\u914d\u8fc7\u7a0b\u51fa\u73b0\u4e86\n1\u6b21\n\u8be5\u4e2a\u4f53\u4eb2\u7f18\u5173\u7cfb\u7a0b\u5ea6\u6700\u9ad8\u7684\u56db\u4f4d\u5206\u522b\u662f:\n[\u00271LZ7317\u0027, \u00271NP6508\u0027, \u00271NP6516\u0027, \u00271NP6518\u0027]\n\u4eb2\u7f18\u6307\u6570\u4e3a:\n[0.8680384738797778, 0.05110225935152804, 0.03961237733443798, 0.05351734402758301]", "value": 1000.0}, {"color": "yellow", "id": "1LZ7320", "label": "1LZ7320", "shape": "dot", "size": 10, "title": "\u8be5\u4e2a\u4f53\u5728\u4ea4\u914d\u8fc7\u7a0b\u51fa\u73b0\u4e86\n1\u6b21\n\u8be5\u4e2a\u4f53\u4eb2\u7f18\u5173\u7cfb\u7a0b\u5ea6\u6700\u9ad8\u7684\u56db\u4f4d\u5206\u522b\u662f:\n[\u00271LZ7302\u0027, \u00271LZ7308\u0027, \u00271LZ7320\u0027, \u00271NP6508\u0027]\n\u4eb2\u7f18\u6307\u6570\u4e3a:\n[0.07000441736390636, 0.06120136566174331, 0.8446984888824445, 0.06164808049082038]", "value": 1000.0}, {"color": "yellow", "id": "1NP6421", "label": "1NP6421", "shape": "dot", "size": 10, "title": "\u8be5\u4e2a\u4f53\u5728\u4ea4\u914d\u8fc7\u7a0b\u51fa\u73b0\u4e86\n1\u6b21\n\u8be5\u4e2a\u4f53\u4eb2\u7f18\u5173\u7cfb\u7a0b\u5ea6\u6700\u9ad8\u7684\u56db\u4f4d\u5206\u522b\u662f:\n[\u00271NP6421\u0027, \u00271NP6514\u0027, \u00272A005\u0027, \u00273N135\u0027]\n\u4eb2\u7f18\u6307\u6570\u4e3a:\n[0.8637911721859975, 0.0428927701271154, 0.1471305937316381, 0.0438536024262748]", "value": 1000.0}, {"color": "yellow", "id": "1NP6504", "label": "1NP6504", "shape": "dot", "size": 10, "title": "\u8be5\u4e2a\u4f53\u5728\u4ea4\u914d\u8fc7\u7a0b\u51fa\u73b0\u4e86\n1\u6b21\n\u8be5\u4e2a\u4f53\u4eb2\u7f18\u5173\u7cfb\u7a0b\u5ea6\u6700\u9ad8\u7684\u56db\u4f4d\u5206\u522b\u662f:\n[\u00271NP6504\u0027, \u00271NP6516\u0027, \u00271NP6519\u0027, \u00271SM7402\u0027]\n\u4eb2\u7f18\u6307\u6570\u4e3a:\n[0.8180090808943635, 0.04673148110627594, 0.2762165779899022, 0.04592839739354586]", "value": 1000.0}, {"color": "yellow", "id": "1NP6505", "label": "1NP6505", "shape": "dot", "size": 10, "title": "\u8be5\u4e2a\u4f53\u5728\u4ea4\u914d\u8fc7\u7a0b\u51fa\u73b0\u4e86\n1\u6b21\n\u8be5\u4e2a\u4f53\u4eb2\u7f18\u5173\u7cfb\u7a0b\u5ea6\u6700\u9ad8\u7684\u56db\u4f4d\u5206\u522b\u662f:\n[\u00271JY7438\u0027, \u00271NP6505\u0027, \u00271NP6547\u0027, \u00272B059\u0027]\n\u4eb2\u7f18\u6307\u6570\u4e3a:\n[0.05018740310879513, 0.8569858641384822, 0.05022605029714937, 0.14351987685736065]", "value": 1000.0}, {"color": "yellow", "id": "1NP6508", "label": "1NP6508", "shape": "dot", "size": 10, "title": "\u8be5\u4e2a\u4f53\u5728\u4ea4\u914d\u8fc7\u7a0b\u51fa\u73b0\u4e86\n1\u6b21\n\u8be5\u4e2a\u4f53\u4eb2\u7f18\u5173\u7cfb\u7a0b\u5ea6\u6700\u9ad8\u7684\u56db\u4f4d\u5206\u522b\u662f:\n[\u00271NP6508\u0027, \u00271NP6510\u0027, \u00271NP6518\u0027, \u00271NP6526\u0027]\n\u4eb2\u7f18\u6307\u6570\u4e3a:\n[0.918607955245851, 0.3066226787901257, 0.23761873164293137, 0.24338032254079967]", "value": 1000.0}, {"color": "yellow", "id": "1NP6514", "label": "1NP6514", "shape": "dot", "size": 10, "title": "\u8be5\u4e2a\u4f53\u5728\u4ea4\u914d\u8fc7\u7a0b\u51fa\u73b0\u4e86\n1\u6b21\n\u8be5\u4e2a\u4f53\u4eb2\u7f18\u5173\u7cfb\u7a0b\u5ea6\u6700\u9ad8\u7684\u56db\u4f4d\u5206\u522b\u662f:\n[\u00271NP6508\u0027, \u00271NP6510\u0027, \u00271NP6514\u0027, \u00273N034\u0027]\n\u4eb2\u7f18\u6307\u6570\u4e3a:\n[0.08936738792186792, 0.09069354552981457, 0.8375519188698253, 0.11873560511031131]", "value": 1000.0}, {"color": "yellow", "id": "1NP6516", "label": "1NP6516", "shape": "dot", "size": 10, "title": "\u8be5\u4e2a\u4f53\u5728\u4ea4\u914d\u8fc7\u7a0b\u51fa\u73b0\u4e86\n1\u6b21\n\u8be5\u4e2a\u4f53\u4eb2\u7f18\u5173\u7cfb\u7a0b\u5ea6\u6700\u9ad8\u7684\u56db\u4f4d\u5206\u522b\u662f:\n[\u00271NP6502\u0027, \u00271NP6508\u0027, \u00271NP6515\u0027, \u00271NP6516\u0027]\n\u4eb2\u7f18\u6307\u6570\u4e3a:\n[0.25366971107811487, 0.15709330414851996, 0.3336086249530019, 0.8438151940240709]", "value": 1000.0}, {"color": "yellow", "id": "1NP6517", "label": "1NP6517", "shape": "dot", "size": 10, "title": "\u8be5\u4e2a\u4f53\u5728\u4ea4\u914d\u8fc7\u7a0b\u51fa\u73b0\u4e86\n1\u6b21\n\u8be5\u4e2a\u4f53\u4eb2\u7f18\u5173\u7cfb\u7a0b\u5ea6\u6700\u9ad8\u7684\u56db\u4f4d\u5206\u522b\u662f:\n[\u00271NP6508\u0027, \u00271NP6510\u0027, \u00271NP6517\u0027, \u00271NP6528\u0027]\n\u4eb2\u7f18\u6307\u6570\u4e3a:\n[0.1700629602706694, 0.15990434020715633, 0.865561650927984, 0.37691924070255445]", "value": 1000.0}, {"color": "yellow", "id": "1NP6518", "label": "1NP6518", "shape": "dot", "size": 10, "title": "\u8be5\u4e2a\u4f53\u5728\u4ea4\u914d\u8fc7\u7a0b\u51fa\u73b0\u4e86\n1\u6b21\n\u8be5\u4e2a\u4f53\u4eb2\u7f18\u5173\u7cfb\u7a0b\u5ea6\u6700\u9ad8\u7684\u56db\u4f4d\u5206\u522b\u662f:\n[\u00271NP6508\u0027, \u00271NP6510\u0027, \u00271NP6518\u0027, \u00271NP6526\u0027]\n\u4eb2\u7f18\u6307\u6570\u4e3a:\n[0.23761873164293137, 0.23408360769682018, 0.8401901363692136, 0.23069578058179868]", "value": 1000.0}, {"color": "yellow", "id": "1NP6520", "label": "1NP6520", "shape": "dot", "size": 10, "title": "\u8be5\u4e2a\u4f53\u5728\u4ea4\u914d\u8fc7\u7a0b\u51fa\u73b0\u4e86\n1\u6b21\n\u8be5\u4e2a\u4f53\u4eb2\u7f18\u5173\u7cfb\u7a0b\u5ea6\u6700\u9ad8\u7684\u56db\u4f4d\u5206\u522b\u662f:\n[\u00271NP6508\u0027, \u00271NP6510\u0027, \u00271NP6520\u0027, \u00271SM7461\u0027]\n\u4eb2\u7f18\u6307\u6570\u4e3a:\n[0.04390975022822313, 0.03936299359071422, 0.8403126406643765, 0.043930410674828016]", "value": 1000.0}, {"color": "yellow", "id": "1NP6521", "label": "1NP6521", "shape": "dot", "size": 10, "title": "\u8be5\u4e2a\u4f53\u5728\u4ea4\u914d\u8fc7\u7a0b\u51fa\u73b0\u4e86\n1\u6b21\n\u8be5\u4e2a\u4f53\u4eb2\u7f18\u5173\u7cfb\u7a0b\u5ea6\u6700\u9ad8\u7684\u56db\u4f4d\u5206\u522b\u662f:\n[\u00271NP6521\u0027, \u00271NP6535\u0027, \u00271NP6536\u0027, \u00271NP6539\u0027]\n\u4eb2\u7f18\u6307\u6570\u4e3a:\n[0.8599405510670316, 0.24680144943446686, 0.17307160742447578, 0.18725342410212503]", "value": 1000.0}, {"color": "yellow", "id": "1NP6522", "label": "1NP6522", "shape": "dot", "size": 10, "title": "\u8be5\u4e2a\u4f53\u5728\u4ea4\u914d\u8fc7\u7a0b\u51fa\u73b0\u4e86\n1\u6b21\n\u8be5\u4e2a\u4f53\u4eb2\u7f18\u5173\u7cfb\u7a0b\u5ea6\u6700\u9ad8\u7684\u56db\u4f4d\u5206\u522b\u662f:\n[\u00271NP6522\u0027, \u00271NP6543-2\u0027, \u00271SM7454\u0027, \u00272C006\u0027]\n\u4eb2\u7f18\u6307\u6570\u4e3a:\n[0.8922034183568373, 0.055317962715205705, 0.04893076182707186, 0.05588114218324287]", "value": 1000.0}, {"color": "yellow", "id": "1NP6523", "label": "1NP6523", "shape": "dot", "size": 10, "title": "\u8be5\u4e2a\u4f53\u5728\u4ea4\u914d\u8fc7\u7a0b\u51fa\u73b0\u4e86\n1\u6b21\n\u8be5\u4e2a\u4f53\u4eb2\u7f18\u5173\u7cfb\u7a0b\u5ea6\u6700\u9ad8\u7684\u56db\u4f4d\u5206\u522b\u662f:\n[\u00271NP6523\u0027, \u00271NP6539\u0027, \u00271SM7404\u0027, \u00272AHXT1\u0027]\n\u4eb2\u7f18\u6307\u6570\u4e3a:\n[0.8406543887576279, 0.04652511970430612, 0.04206246323768236, 0.03471123327163801]", "value": 1000.0}, {"color": "yellow", "id": "1NP6525", "label": "1NP6525", "shape": "dot", "size": 10, "title": "\u8be5\u4e2a\u4f53\u5728\u4ea4\u914d\u8fc7\u7a0b\u51fa\u73b0\u4e86\n1\u6b21\n\u8be5\u4e2a\u4f53\u4eb2\u7f18\u5173\u7cfb\u7a0b\u5ea6\u6700\u9ad8\u7684\u56db\u4f4d\u5206\u522b\u662f:\n[\u00271NP6510\u0027, \u00271NP6516\u0027, \u00271NP6525\u0027, \u00272B050\u0027]\n\u4eb2\u7f18\u6307\u6570\u4e3a:\n[0.07917935710495426, 0.0878846970478807, 0.8545075828022188, 0.07794289014168067]", "value": 1000.0}, {"color": "yellow", "id": "1NP6527", "label": "1NP6527", "shape": "dot", "size": 10, "title": "\u8be5\u4e2a\u4f53\u5728\u4ea4\u914d\u8fc7\u7a0b\u51fa\u73b0\u4e86\n1\u6b21\n\u8be5\u4e2a\u4f53\u4eb2\u7f18\u5173\u7cfb\u7a0b\u5ea6\u6700\u9ad8\u7684\u56db\u4f4d\u5206\u522b\u662f:\n[\u00271NP6527\u0027, \u00271NP6545\u0027, \u00272A026\u0027, \u00273N034\u0027]\n\u4eb2\u7f18\u6307\u6570\u4e3a:\n[0.7931518899240042, 0.13863307357514448, 0.12125447814754506, 0.11160556345497606]", "value": 1000.0}, {"color": "yellow", "id": "1NP6528", "label": "1NP6528", "shape": "dot", "size": 10, "title": "\u8be5\u4e2a\u4f53\u5728\u4ea4\u914d\u8fc7\u7a0b\u51fa\u73b0\u4e86\n1\u6b21\n\u8be5\u4e2a\u4f53\u4eb2\u7f18\u5173\u7cfb\u7a0b\u5ea6\u6700\u9ad8\u7684\u56db\u4f4d\u5206\u522b\u662f:\n[\u00271NP6508\u0027, \u00271NP6510\u0027, \u00271NP6517\u0027, \u00271NP6528\u0027]\n\u4eb2\u7f18\u6307\u6570\u4e3a:\n[0.1565500559348566, 0.16097528053351404, 0.37691924070255445, 0.8662451471144841]", "value": 1000.0}, {"color": "yellow", "id": "1NP6529", "label": "1NP6529", "shape": "dot", "size": 10, "title": "\u8be5\u4e2a\u4f53\u5728\u4ea4\u914d\u8fc7\u7a0b\u51fa\u73b0\u4e86\n1\u6b21\n\u8be5\u4e2a\u4f53\u4eb2\u7f18\u5173\u7cfb\u7a0b\u5ea6\u6700\u9ad8\u7684\u56db\u4f4d\u5206\u522b\u662f:\n[\u00271NP6521\u0027, \u00271NP6529\u0027, \u00271NP6543-2\u0027, \u00272A005\u0027]\n\u4eb2\u7f18\u6307\u6570\u4e3a:\n[0.054451925406350396, 0.8560199274936919, 0.06633046688368753, 0.15697809177568986]", "value": 1000.0}, {"color": "yellow", "id": "1NP6530-1", "label": "1NP6530-1", "shape": "dot", "size": 10, "title": "\u8be5\u4e2a\u4f53\u5728\u4ea4\u914d\u8fc7\u7a0b\u51fa\u73b0\u4e86\n1\u6b21\n\u8be5\u4e2a\u4f53\u4eb2\u7f18\u5173\u7cfb\u7a0b\u5ea6\u6700\u9ad8\u7684\u56db\u4f4d\u5206\u522b\u662f:\n[\u00271JY7410\u0027, \u00271NP6510\u0027, \u00271NP6526\u0027, \u00271NP6530-1\u0027]\n\u4eb2\u7f18\u6307\u6570\u4e3a:\n[0.07267447625747109, 0.06118941857619514, 0.06506337384662324, 0.845333372253403]", "value": 1000.0}, {"color": "yellow", "id": "1NP6532", "label": "1NP6532", "shape": "dot", "size": 10, "title": "\u8be5\u4e2a\u4f53\u5728\u4ea4\u914d\u8fc7\u7a0b\u51fa\u73b0\u4e86\n1\u6b21\n\u8be5\u4e2a\u4f53\u4eb2\u7f18\u5173\u7cfb\u7a0b\u5ea6\u6700\u9ad8\u7684\u56db\u4f4d\u5206\u522b\u662f:\n[\u00271NP6508\u0027, \u00271NP6510\u0027, \u00271NP6518\u0027, \u00271NP6532\u0027]\n\u4eb2\u7f18\u6307\u6570\u4e3a:\n[0.12043924123093123, 0.1472871269976758, 0.10769393325250588, 0.8739915992708802]", "value": 1000.0}, {"color": "yellow", "id": "1NP6533", "label": "1NP6533", "shape": "dot", "size": 10, "title": "\u8be5\u4e2a\u4f53\u5728\u4ea4\u914d\u8fc7\u7a0b\u51fa\u73b0\u4e86\n1\u6b21\n\u8be5\u4e2a\u4f53\u4eb2\u7f18\u5173\u7cfb\u7a0b\u5ea6\u6700\u9ad8\u7684\u56db\u4f4d\u5206\u522b\u662f:\n[\u00271NP6508\u0027, \u00271NP6510\u0027, \u00271NP6533\u0027, \u00272C021\u0027]\n\u4eb2\u7f18\u6307\u6570\u4e3a:\n[0.11418982072911327, 0.09382250940208274, 0.8520740252562536, 0.11326860787462044]", "value": 1000.0}, {"color": "yellow", "id": "1NP6535", "label": "1NP6535", "shape": "dot", "size": 10, "title": "\u8be5\u4e2a\u4f53\u5728\u4ea4\u914d\u8fc7\u7a0b\u51fa\u73b0\u4e86\n1\u6b21\n\u8be5\u4e2a\u4f53\u4eb2\u7f18\u5173\u7cfb\u7a0b\u5ea6\u6700\u9ad8\u7684\u56db\u4f4d\u5206\u522b\u662f:\n[\u00271NP6521\u0027, \u00271NP6535\u0027, \u00271NP6536\u0027, \u00271NP6539\u0027]\n\u4eb2\u7f18\u6307\u6570\u4e3a:\n[0.24680144943446686, 0.8478889479663716, 0.18223731073057214, 0.20164500507883246]", "value": 1000.0}, {"color": "yellow", "id": "1NP6536", "label": "1NP6536", "shape": "dot", "size": 10, "title": "\u8be5\u4e2a\u4f53\u5728\u4ea4\u914d\u8fc7\u7a0b\u51fa\u73b0\u4e86\n1\u6b21\n\u8be5\u4e2a\u4f53\u4eb2\u7f18\u5173\u7cfb\u7a0b\u5ea6\u6700\u9ad8\u7684\u56db\u4f4d\u5206\u522b\u662f:\n[\u00271NP6521\u0027, \u00271NP6535\u0027, \u00271NP6536\u0027, \u00271NP6539\u0027]\n\u4eb2\u7f18\u6307\u6570\u4e3a:\n[0.17307160742447578, 0.18223731073057214, 0.8613984494050958, 0.39005977087132065]", "value": 1000.0}, {"color": "yellow", "id": "1NP6537", "label": "1NP6537", "shape": "dot", "size": 10, "title": "\u8be5\u4e2a\u4f53\u5728\u4ea4\u914d\u8fc7\u7a0b\u51fa\u73b0\u4e86\n1\u6b21\n\u8be5\u4e2a\u4f53\u4eb2\u7f18\u5173\u7cfb\u7a0b\u5ea6\u6700\u9ad8\u7684\u56db\u4f4d\u5206\u522b\u662f:\n[\u00271NP6510\u0027, \u00271NP6518\u0027, \u00271NP6537\u0027, \u00272C021\u0027]\n\u4eb2\u7f18\u6307\u6570\u4e3a:\n[0.058682941806923454, 0.058960520983660336, 0.8477333869566371, 0.05126851518067633]", "value": 1000.0}, {"color": "yellow", "id": "1NP6539", "label": "1NP6539", "shape": "dot", "size": 10, "title": "\u8be5\u4e2a\u4f53\u5728\u4ea4\u914d\u8fc7\u7a0b\u51fa\u73b0\u4e86\n1\u6b21\n\u8be5\u4e2a\u4f53\u4eb2\u7f18\u5173\u7cfb\u7a0b\u5ea6\u6700\u9ad8\u7684\u56db\u4f4d\u5206\u522b\u662f:\n[\u00271NP6521\u0027, \u00271NP6535\u0027, \u00271NP6536\u0027, \u00271NP6539\u0027]\n\u4eb2\u7f18\u6307\u6570\u4e3a:\n[0.18725342410212503, 0.20164500507883246, 0.39005977087132065, 0.8368956458600258]", "value": 1000.0}, {"color": "yellow", "id": "1NP6543-1-1", "label": "1NP6543-1-1", "shape": "dot", "size": 10, "title": "\u8be5\u4e2a\u4f53\u5728\u4ea4\u914d\u8fc7\u7a0b\u51fa\u73b0\u4e86\n1\u6b21\n\u8be5\u4e2a\u4f53\u4eb2\u7f18\u5173\u7cfb\u7a0b\u5ea6\u6700\u9ad8\u7684\u56db\u4f4d\u5206\u522b\u662f:\n[\u00271NP6535\u0027, \u00271NP6536\u0027, \u00271NP6539\u0027, \u00271NP6543-1-1\u0027]\n\u4eb2\u7f18\u6307\u6570\u4e3a:\n[0.043634358628185856, 0.047483278298610376, 0.043935515020459705, 0.8792549088094517]", "value": 1000.0}, {"color": "yellow", "id": "1NP6543-2", "label": "1NP6543-2", "shape": "dot", "size": 10, "title": "\u8be5\u4e2a\u4f53\u5728\u4ea4\u914d\u8fc7\u7a0b\u51fa\u73b0\u4e86\n1\u6b21\n\u8be5\u4e2a\u4f53\u4eb2\u7f18\u5173\u7cfb\u7a0b\u5ea6\u6700\u9ad8\u7684\u56db\u4f4d\u5206\u522b\u662f:\n[\u00271NP6521\u0027, \u00271NP6535\u0027, \u00271NP6536\u0027, \u00271NP6543-2\u0027]\n\u4eb2\u7f18\u6307\u6570\u4e3a:\n[0.1209965871611037, 0.1716654817349617, 0.1148893591447429, 0.8331451671410685]", "value": 1000.0}, {"color": "yellow", "id": "1NP6544-3", "label": "1NP6544-3", "shape": "dot", "size": 10, "title": "\u8be5\u4e2a\u4f53\u5728\u4ea4\u914d\u8fc7\u7a0b\u51fa\u73b0\u4e86\n1\u6b21\n\u8be5\u4e2a\u4f53\u4eb2\u7f18\u5173\u7cfb\u7a0b\u5ea6\u6700\u9ad8\u7684\u56db\u4f4d\u5206\u522b\u662f:\n[\u00271NP6508\u0027, \u00271NP6517\u0027, \u00271NP6544-3\u0027, \u00272B059\u0027]\n\u4eb2\u7f18\u6307\u6570\u4e3a:\n[0.04782964460933709, 0.04956026084258111, 0.8309537014164998, 0.14344695763405016]", "value": 1000.0}, {"color": "yellow", "id": "1SM7401", "label": "1SM7401", "shape": "dot", "size": 10, "title": "\u8be5\u4e2a\u4f53\u5728\u4ea4\u914d\u8fc7\u7a0b\u51fa\u73b0\u4e86\n1\u6b21\n\u8be5\u4e2a\u4f53\u4eb2\u7f18\u5173\u7cfb\u7a0b\u5ea6\u6700\u9ad8\u7684\u56db\u4f4d\u5206\u522b\u662f:\n[\u00271NP6547\u0027, \u00271SM7401\u0027, \u00271SM7446\u0027, \u00273N053\u0027]\n\u4eb2\u7f18\u6307\u6570\u4e3a:\n[0.05961898157015702, 0.8383097926640992, 0.03708694156710569, 0.04390902103599078]", "value": 1000.0}, {"color": "yellow", "id": "1SM7402", "label": "1SM7402", "shape": "dot", "size": 10, "title": "\u8be5\u4e2a\u4f53\u5728\u4ea4\u914d\u8fc7\u7a0b\u51fa\u73b0\u4e86\n1\u6b21\n\u8be5\u4e2a\u4f53\u4eb2\u7f18\u5173\u7cfb\u7a0b\u5ea6\u6700\u9ad8\u7684\u56db\u4f4d\u5206\u522b\u662f:\n[\u00271NP6504\u0027, \u00271NP6508\u0027, \u00271SM7402\u0027, \u00271SM7407\u0027]\n\u4eb2\u7f18\u6307\u6570\u4e3a:\n[0.04592839739354586, 0.04889037624443209, 0.8363672245550993, 0.2962596418372711]", "value": 1000.0}, {"color": "yellow", "id": "1SM7404", "label": "1SM7404", "shape": "dot", "size": 10, "title": "\u8be5\u4e2a\u4f53\u5728\u4ea4\u914d\u8fc7\u7a0b\u51fa\u73b0\u4e86\n1\u6b21\n\u8be5\u4e2a\u4f53\u4eb2\u7f18\u5173\u7cfb\u7a0b\u5ea6\u6700\u9ad8\u7684\u56db\u4f4d\u5206\u522b\u662f:\n[\u00271JY7478\u0027, \u00271NP6421\u0027, \u00271SM7404\u0027, \u00272B029\u0027]\n\u4eb2\u7f18\u6307\u6570\u4e3a:\n[0.04597169974511713, 0.042850513923335026, 0.8266188966547521, 0.05649220527458792]", "value": 1000.0}, {"color": "yellow", "id": "1SM7406", "label": "1SM7406", "shape": "dot", "size": 10, "title": "\u8be5\u4e2a\u4f53\u5728\u4ea4\u914d\u8fc7\u7a0b\u51fa\u73b0\u4e86\n1\u6b21\n\u8be5\u4e2a\u4f53\u4eb2\u7f18\u5173\u7cfb\u7a0b\u5ea6\u6700\u9ad8\u7684\u56db\u4f4d\u5206\u522b\u662f:\n[\u00271NP6502\u0027, \u00271NP6516\u0027, \u00271SM7406\u0027, \u00272B050\u0027]\n\u4eb2\u7f18\u6307\u6570\u4e3a:\n[0.05575815175992538, 0.04720424073740749, 0.8833592888255455, 0.04584356803042759]", "value": 1000.0}, {"color": "yellow", "id": "1SM7407", "label": "1SM7407", "shape": "dot", "size": 10, "title": "\u8be5\u4e2a\u4f53\u5728\u4ea4\u914d\u8fc7\u7a0b\u51fa\u73b0\u4e86\n1\u6b21\n\u8be5\u4e2a\u4f53\u4eb2\u7f18\u5173\u7cfb\u7a0b\u5ea6\u6700\u9ad8\u7684\u56db\u4f4d\u5206\u522b\u662f:\n[\u00271NP6536\u0027, \u00271NP6539\u0027, \u00271SM7402\u0027, \u00271SM7407\u0027]\n\u4eb2\u7f18\u6307\u6570\u4e3a:\n[0.03974825015387286, 0.04258091891542169, 0.2962596418372711, 0.8408862718877477]", "value": 1000.0}, {"color": "yellow", "id": "1SM7410", "label": "1SM7410", "shape": "dot", "size": 10, "title": "\u8be5\u4e2a\u4f53\u5728\u4ea4\u914d\u8fc7\u7a0b\u51fa\u73b0\u4e86\n1\u6b21\n\u8be5\u4e2a\u4f53\u4eb2\u7f18\u5173\u7cfb\u7a0b\u5ea6\u6700\u9ad8\u7684\u56db\u4f4d\u5206\u522b\u662f:\n[\u00271NP6526\u0027, \u00271NP6533\u0027, \u00271SM7410\u0027, \u00273N008\u0027]\n\u4eb2\u7f18\u6307\u6570\u4e3a:\n[0.050988262299085534, 0.04728347962673849, 0.8719036788434091, 0.04674849559171459]", "value": 1000.0}, {"color": "yellow", "id": "1SM7411", "label": "1SM7411", "shape": "dot", "size": 10, "title": "\u8be5\u4e2a\u4f53\u5728\u4ea4\u914d\u8fc7\u7a0b\u51fa\u73b0\u4e86\n1\u6b21\n\u8be5\u4e2a\u4f53\u4eb2\u7f18\u5173\u7cfb\u7a0b\u5ea6\u6700\u9ad8\u7684\u56db\u4f4d\u5206\u522b\u662f:\n[\u00271NP6510\u0027, \u00271NP6517\u0027, \u00271NP6540\u0027, \u00271SM7411\u0027]\n\u4eb2\u7f18\u6307\u6570\u4e3a:\n[0.04286311630963501, 0.04950508529694292, 0.04916746929301359, 0.8612647641623551]", "value": 1000.0}, {"color": "yellow", "id": "1SM7415", "label": "1SM7415", "shape": "dot", "size": 10, "title": "\u8be5\u4e2a\u4f53\u5728\u4ea4\u914d\u8fc7\u7a0b\u51fa\u73b0\u4e86\n1\u6b21\n\u8be5\u4e2a\u4f53\u4eb2\u7f18\u5173\u7cfb\u7a0b\u5ea6\u6700\u9ad8\u7684\u56db\u4f4d\u5206\u522b\u662f:\n[\u00271NP6515\u0027, \u00271NP6516\u0027, \u00271SM7415\u0027, \u00272D103\u0027]\n\u4eb2\u7f18\u6307\u6570\u4e3a:\n[0.042862873245557515, 0.04625070036057933, 0.8229811996678525, 0.05070168975147345]", "value": 1000.0}, {"color": "yellow", "id": "1SM7435", "label": "1SM7435", "shape": "dot", "size": 10, "title": "\u8be5\u4e2a\u4f53\u5728\u4ea4\u914d\u8fc7\u7a0b\u51fa\u73b0\u4e86\n1\u6b21\n\u8be5\u4e2a\u4f53\u4eb2\u7f18\u5173\u7cfb\u7a0b\u5ea6\u6700\u9ad8\u7684\u56db\u4f4d\u5206\u522b\u662f:\n[\u00271JY7403\u0027, \u00271JY7439\u0027, \u00271SM7435\u0027, \u00271SM7461\u0027]\n\u4eb2\u7f18\u6307\u6570\u4e3a:\n[0.047397513624921936, 0.055310950802693305, 0.7087556669921835, 0.04687683342474209]", "value": 1000.0}, {"color": "yellow", "id": "1SM7438", "label": "1SM7438", "shape": "dot", "size": 10, "title": "\u8be5\u4e2a\u4f53\u5728\u4ea4\u914d\u8fc7\u7a0b\u51fa\u73b0\u4e86\n1\u6b21\n\u8be5\u4e2a\u4f53\u4eb2\u7f18\u5173\u7cfb\u7a0b\u5ea6\u6700\u9ad8\u7684\u56db\u4f4d\u5206\u522b\u662f:\n[\u00271NP6515\u0027, \u00271SM7438\u0027, \u00272B029\u0027, \u00272GXLW1153\u0027]\n\u4eb2\u7f18\u6307\u6570\u4e3a:\n[0.03942375961013967, 0.8034869745079236, 0.03980196731504575, 0.044635333445906686]", "value": 1000.0}, {"color": "yellow", "id": "1SM7439", "label": "1SM7439", "shape": "dot", "size": 10, "title": "\u8be5\u4e2a\u4f53\u5728\u4ea4\u914d\u8fc7\u7a0b\u51fa\u73b0\u4e86\n1\u6b21\n\u8be5\u4e2a\u4f53\u4eb2\u7f18\u5173\u7cfb\u7a0b\u5ea6\u6700\u9ad8\u7684\u56db\u4f4d\u5206\u522b\u662f:\n[\u00271NP6537\u0027, \u00271SM7439\u0027, \u00271SM7440\u0027, \u00272A005\u0027]\n\u4eb2\u7f18\u6307\u6570\u4e3a:\n[0.03585703733392901, 0.8470814891002437, 0.32997044183794844, 0.03638229880584482]", "value": 1000.0}, {"color": "yellow", "id": "1SM7440", "label": "1SM7440", "shape": "dot", "size": 10, "title": "\u8be5\u4e2a\u4f53\u5728\u4ea4\u914d\u8fc7\u7a0b\u51fa\u73b0\u4e86\n1\u6b21\n\u8be5\u4e2a\u4f53\u4eb2\u7f18\u5173\u7cfb\u7a0b\u5ea6\u6700\u9ad8\u7684\u56db\u4f4d\u5206\u522b\u662f:\n[\u00271JY7442\u0027, \u00271NP6524\u0027, \u00271SM7439\u0027, \u00271SM7440\u0027]\n\u4eb2\u7f18\u6307\u6570\u4e3a:\n[0.03916927152078557, 0.03765501926243694, 0.32997044183794844, 0.8549966277265526]", "value": 1000.0}, {"color": "yellow", "id": "1SM7441", "label": "1SM7441", "shape": "dot", "size": 10, "title": "\u8be5\u4e2a\u4f53\u5728\u4ea4\u914d\u8fc7\u7a0b\u51fa\u73b0\u4e86\n1\u6b21\n\u8be5\u4e2a\u4f53\u4eb2\u7f18\u5173\u7cfb\u7a0b\u5ea6\u6700\u9ad8\u7684\u56db\u4f4d\u5206\u522b\u662f:\n[\u00271NP6522\u0027, \u00271SM7441\u0027, \u00272A016\u0027, \u00273N060\u0027]\n\u4eb2\u7f18\u6307\u6570\u4e3a:\n[0.04703243138021273, 0.8587684960843535, 0.05693267432912665, 0.04433028802839044]", "value": 1000.0}, {"color": "yellow", "id": "1SM7443", "label": "1SM7443", "shape": "dot", "size": 10, "title": "\u8be5\u4e2a\u4f53\u5728\u4ea4\u914d\u8fc7\u7a0b\u51fa\u73b0\u4e86\n1\u6b21\n\u8be5\u4e2a\u4f53\u4eb2\u7f18\u5173\u7cfb\u7a0b\u5ea6\u6700\u9ad8\u7684\u56db\u4f4d\u5206\u522b\u662f:\n[\u00271NP6510\u0027, \u00271NP6528\u0027, \u00271SM7443\u0027, \u00272D103\u0027]\n\u4eb2\u7f18\u6307\u6570\u4e3a:\n[0.057081635663017466, 0.05305163325470435, 0.8122888108897044, 0.04681144918783986]", "value": 1000.0}, {"color": "yellow", "id": "1SM7446", "label": "1SM7446", "shape": "dot", "size": 10, "title": "\u8be5\u4e2a\u4f53\u5728\u4ea4\u914d\u8fc7\u7a0b\u51fa\u73b0\u4e86\n1\u6b21\n\u8be5\u4e2a\u4f53\u4eb2\u7f18\u5173\u7cfb\u7a0b\u5ea6\u6700\u9ad8\u7684\u56db\u4f4d\u5206\u522b\u662f:\n[\u00271JY7401\u0027, \u00271NP6515\u0027, \u00271NP6516\u0027, \u00271SM7446\u0027]\n\u4eb2\u7f18\u6307\u6570\u4e3a:\n[0.09508814405468106, 0.04999656086205759, 0.049616894772685764, 0.812967445794646]", "value": 1000.0}, {"color": "yellow", "id": "1SM7451", "label": "1SM7451", "shape": "dot", "size": 10, "title": "\u8be5\u4e2a\u4f53\u5728\u4ea4\u914d\u8fc7\u7a0b\u51fa\u73b0\u4e86\n1\u6b21\n\u8be5\u4e2a\u4f53\u4eb2\u7f18\u5173\u7cfb\u7a0b\u5ea6\u6700\u9ad8\u7684\u56db\u4f4d\u5206\u522b\u662f:\n[\u00271NP6528\u0027, \u00271SM7451\u0027, \u00272A027\u0027, \u00272D058\u0027]\n\u4eb2\u7f18\u6307\u6570\u4e3a:\n[0.05997847334107964, 0.8188525132439842, 0.043518903191277464, 0.04348292970777741]", "value": 1000.0}, {"color": "yellow", "id": "1SM7454", "label": "1SM7454", "shape": "dot", "size": 10, "title": "\u8be5\u4e2a\u4f53\u5728\u4ea4\u914d\u8fc7\u7a0b\u51fa\u73b0\u4e86\n1\u6b21\n\u8be5\u4e2a\u4f53\u4eb2\u7f18\u5173\u7cfb\u7a0b\u5ea6\u6700\u9ad8\u7684\u56db\u4f4d\u5206\u522b\u662f:\n[\u00271NP6510\u0027, \u00271SM7454\u0027, \u00272B029\u0027, \u00272C021\u0027]\n\u4eb2\u7f18\u6307\u6570\u4e3a:\n[0.05533838009773263, 0.8671226084349969, 0.05073304501749689, 0.04950386997655379]", "value": 1000.0}, {"color": "yellow", "id": "1SM7461", "label": "1SM7461", "shape": "dot", "size": 10, "title": "\u8be5\u4e2a\u4f53\u5728\u4ea4\u914d\u8fc7\u7a0b\u51fa\u73b0\u4e86\n1\u6b21\n\u8be5\u4e2a\u4f53\u4eb2\u7f18\u5173\u7cfb\u7a0b\u5ea6\u6700\u9ad8\u7684\u56db\u4f4d\u5206\u522b\u662f:\n[\u00271JY7401\u0027, \u00271SM7461\u0027, \u00272B008\u0027, \u00272D014\u0027]\n\u4eb2\u7f18\u6307\u6570\u4e3a:\n[0.0478972533686797, 0.8545800158973725, 0.09500963435758267, 0.0513582058253491]", "value": 1000.0}, {"color": "yellow", "id": "2A001", "label": "2A001", "shape": "dot", "size": 10, "title": "\u8be5\u4e2a\u4f53\u5728\u4ea4\u914d\u8fc7\u7a0b\u51fa\u73b0\u4e86\n1\u6b21\n\u8be5\u4e2a\u4f53\u4eb2\u7f18\u5173\u7cfb\u7a0b\u5ea6\u6700\u9ad8\u7684\u56db\u4f4d\u5206\u522b\u662f:\n[\u00271NP6516\u0027, \u00271NP6533\u0027, \u00272A001\u0027, \u00272A002\u0027]\n\u4eb2\u7f18\u6307\u6570\u4e3a:\n[0.04227976252314859, 0.047508313898613694, 0.8414355967033562, 0.31566223183989756]", "value": 1000.0}, {"color": "yellow", "id": "2A005", "label": "2A005", "shape": "dot", "size": 10, "title": "\u8be5\u4e2a\u4f53\u5728\u4ea4\u914d\u8fc7\u7a0b\u51fa\u73b0\u4e86\n1\u6b21\n\u8be5\u4e2a\u4f53\u4eb2\u7f18\u5173\u7cfb\u7a0b\u5ea6\u6700\u9ad8\u7684\u56db\u4f4d\u5206\u522b\u662f:\n[\u00271NP6421\u0027, \u00271NP6529\u0027, \u00271NP6535\u0027, \u00272A005\u0027]\n\u4eb2\u7f18\u6307\u6570\u4e3a:\n[0.1471305937316381, 0.15697809177568986, 0.06624004704678263, 0.9005823232434148]", "value": 1000.0}, {"color": "yellow", "id": "2A006", "label": "2A006", "shape": "dot", "size": 10, "title": "\u8be5\u4e2a\u4f53\u5728\u4ea4\u914d\u8fc7\u7a0b\u51fa\u73b0\u4e86\n1\u6b21\n\u8be5\u4e2a\u4f53\u4eb2\u7f18\u5173\u7cfb\u7a0b\u5ea6\u6700\u9ad8\u7684\u56db\u4f4d\u5206\u522b\u662f:\n[\u00271JY7491\u0027, \u00272A006\u0027, \u00273N012\u0027, \u00273N133\u0027]\n\u4eb2\u7f18\u6307\u6570\u4e3a:\n[0.03670074969337621, 0.8275629575325473, 0.03524378666588489, 0.17280593838754132]", "value": 1000.0}, {"color": "yellow", "id": "2A008", "label": "2A008", "shape": "dot", "size": 10, "title": "\u8be5\u4e2a\u4f53\u5728\u4ea4\u914d\u8fc7\u7a0b\u51fa\u73b0\u4e86\n1\u6b21\n\u8be5\u4e2a\u4f53\u4eb2\u7f18\u5173\u7cfb\u7a0b\u5ea6\u6700\u9ad8\u7684\u56db\u4f4d\u5206\u522b\u662f:\n[\u00272A008\u0027, \u00272A012\u0027, \u00272A024\u0027, \u00273N132\u0027]\n\u4eb2\u7f18\u6307\u6570\u4e3a:\n[0.8420213811306209, 0.08034241871676219, 0.12266935414385412, 0.08037037108569867]", "value": 1000.0}, {"color": "yellow", "id": "2A012", "label": "2A012", "shape": "dot", "size": 10, "title": "\u8be5\u4e2a\u4f53\u5728\u4ea4\u914d\u8fc7\u7a0b\u51fa\u73b0\u4e86\n1\u6b21\n\u8be5\u4e2a\u4f53\u4eb2\u7f18\u5173\u7cfb\u7a0b\u5ea6\u6700\u9ad8\u7684\u56db\u4f4d\u5206\u522b\u662f:\n[\u00271JY74108\u0027, \u00272A008\u0027, \u00272A012\u0027, \u00272A013\u0027]\n\u4eb2\u7f18\u6307\u6570\u4e3a:\n[0.061462902609351555, 0.08034241871676219, 0.8881889720495025, 0.0885732975800122]", "value": 1000.0}, {"color": "yellow", "id": "2A013", "label": "2A013", "shape": "dot", "size": 10, "title": "\u8be5\u4e2a\u4f53\u5728\u4ea4\u914d\u8fc7\u7a0b\u51fa\u73b0\u4e86\n1\u6b21\n\u8be5\u4e2a\u4f53\u4eb2\u7f18\u5173\u7cfb\u7a0b\u5ea6\u6700\u9ad8\u7684\u56db\u4f4d\u5206\u522b\u662f:\n[\u00271NP6525\u0027, \u00272A008\u0027, \u00272A012\u0027, \u00272A013\u0027]\n\u4eb2\u7f18\u6307\u6570\u4e3a:\n[0.0592789349254513, 0.0576810686243727, 0.0885732975800122, 0.8426839738064389]", "value": 1000.0}, {"color": "yellow", "id": "2A016", "label": "2A016", "shape": "dot", "size": 10, "title": "\u8be5\u4e2a\u4f53\u5728\u4ea4\u914d\u8fc7\u7a0b\u51fa\u73b0\u4e86\n1\u6b21\n\u8be5\u4e2a\u4f53\u4eb2\u7f18\u5173\u7cfb\u7a0b\u5ea6\u6700\u9ad8\u7684\u56db\u4f4d\u5206\u522b\u662f:\n[\u00271NP6543-2\u0027, \u00271SM7441\u0027, \u00272A016\u0027, \u00272B030\u0027]\n\u4eb2\u7f18\u6307\u6570\u4e3a:\n[0.05307423821393093, 0.05693267432912665, 0.8759696547352248, 0.07373958304596412]", "value": 1000.0}, {"color": "yellow", "id": "2A017", "label": "2A017", "shape": "dot", "size": 10, "title": "\u8be5\u4e2a\u4f53\u5728\u4ea4\u914d\u8fc7\u7a0b\u51fa\u73b0\u4e86\n1\u6b21\n\u8be5\u4e2a\u4f53\u4eb2\u7f18\u5173\u7cfb\u7a0b\u5ea6\u6700\u9ad8\u7684\u56db\u4f4d\u5206\u522b\u662f:\n[\u00271JY7451\u0027, \u00271NP6528\u0027, \u00272A017\u0027, \u00272D058\u0027]\n\u4eb2\u7f18\u6307\u6570\u4e3a:\n[0.042735021540685904, 0.0457337030673064, 0.8599206198126583, 0.039264552639244873]", "value": 1000.0}, {"color": "yellow", "id": "2A020", "label": "2A020", "shape": "dot", "size": 10, "title": "\u8be5\u4e2a\u4f53\u5728\u4ea4\u914d\u8fc7\u7a0b\u51fa\u73b0\u4e86\n1\u6b21\n\u8be5\u4e2a\u4f53\u4eb2\u7f18\u5173\u7cfb\u7a0b\u5ea6\u6700\u9ad8\u7684\u56db\u4f4d\u5206\u522b\u662f:\n[\u00271JY7428\u0027, \u00271NP6508\u0027, \u00272A020\u0027, \u00272A021\u0027]\n\u4eb2\u7f18\u6307\u6570\u4e3a:\n[0.046600749578212475, 0.06289694372205804, 0.8521663896057876, 0.2843290846473084]", "value": 1000.0}, {"color": "yellow", "id": "2A021", "label": "2A021", "shape": "dot", "size": 10, "title": "\u8be5\u4e2a\u4f53\u5728\u4ea4\u914d\u8fc7\u7a0b\u51fa\u73b0\u4e86\n1\u6b21\n\u8be5\u4e2a\u4f53\u4eb2\u7f18\u5173\u7cfb\u7a0b\u5ea6\u6700\u9ad8\u7684\u56db\u4f4d\u5206\u522b\u662f:\n[\u00271JY7428\u0027, \u00271NP6508\u0027, \u00272A020\u0027, \u00272A021\u0027]\n\u4eb2\u7f18\u6307\u6570\u4e3a:\n[0.06497323401953517, 0.04719816413546475, 0.2843290846473084, 0.8223725672172904]", "value": 1000.0}, {"color": "yellow", "id": "2A022", "label": "2A022", "shape": "dot", "size": 10, "title": "\u8be5\u4e2a\u4f53\u5728\u4ea4\u914d\u8fc7\u7a0b\u51fa\u73b0\u4e86\n1\u6b21\n\u8be5\u4e2a\u4f53\u4eb2\u7f18\u5173\u7cfb\u7a0b\u5ea6\u6700\u9ad8\u7684\u56db\u4f4d\u5206\u522b\u662f:\n[\u00271JY7456\u0027, \u00271NP6508\u0027, \u00272A022\u0027, \u00272JXSR23\u0027]\n\u4eb2\u7f18\u6307\u6570\u4e3a:\n[0.04314531370384836, 0.04054841709767136, 0.8689110739187361, 0.045390010461433206]", "value": 1000.0}, {"color": "yellow", "id": "2A023", "label": "2A023", "shape": "dot", "size": 10, "title": "\u8be5\u4e2a\u4f53\u5728\u4ea4\u914d\u8fc7\u7a0b\u51fa\u73b0\u4e86\n1\u6b21\n\u8be5\u4e2a\u4f53\u4eb2\u7f18\u5173\u7cfb\u7a0b\u5ea6\u6700\u9ad8\u7684\u56db\u4f4d\u5206\u522b\u662f:\n[\u00271NP6527\u0027, \u00271NP6545\u0027, \u00272A019\u0027, \u00272A023\u0027]\n\u4eb2\u7f18\u6307\u6570\u4e3a:\n[0.1018321999546239, 0.16647922350901567, 0.14349824415444457, 0.80721946648513]", "value": 1000.0}, {"color": "yellow", "id": "2A024", "label": "2A024", "shape": "dot", "size": 10, "title": "\u8be5\u4e2a\u4f53\u5728\u4ea4\u914d\u8fc7\u7a0b\u51fa\u73b0\u4e86\n1\u6b21\n\u8be5\u4e2a\u4f53\u4eb2\u7f18\u5173\u7cfb\u7a0b\u5ea6\u6700\u9ad8\u7684\u56db\u4f4d\u5206\u522b\u662f:\n[\u00272A008\u0027, \u00272A015\u0027, \u00272A024\u0027, \u00273N132\u0027]\n\u4eb2\u7f18\u6307\u6570\u4e3a:\n[0.12266935414385412, 0.07613011825017227, 0.8500347176443322, 0.0802449500216035]", "value": 1000.0}, {"color": "yellow", "id": "2A025", "label": "2A025", "shape": "dot", "size": 10, "title": "\u8be5\u4e2a\u4f53\u5728\u4ea4\u914d\u8fc7\u7a0b\u51fa\u73b0\u4e86\n1\u6b21\n\u8be5\u4e2a\u4f53\u4eb2\u7f18\u5173\u7cfb\u7a0b\u5ea6\u6700\u9ad8\u7684\u56db\u4f4d\u5206\u522b\u662f:\n[\u00271NP6516\u0027, \u00272A025\u0027, \u00272D014\u0027, \u00273N135\u0027]\n\u4eb2\u7f18\u6307\u6570\u4e3a:\n[0.04647990978585324, 0.8152916245056485, 0.046731761116094006, 0.0758817067627606]", "value": 1000.0}, {"color": "yellow", "id": "2A026", "label": "2A026", "shape": "dot", "size": 10, "title": "\u8be5\u4e2a\u4f53\u5728\u4ea4\u914d\u8fc7\u7a0b\u51fa\u73b0\u4e86\n1\u6b21\n\u8be5\u4e2a\u4f53\u4eb2\u7f18\u5173\u7cfb\u7a0b\u5ea6\u6700\u9ad8\u7684\u56db\u4f4d\u5206\u522b\u662f:\n[\u00271NP6527\u0027, \u00271NP6547\u0027, \u00272A008\u0027, \u00272A026\u0027]\n\u4eb2\u7f18\u6307\u6570\u4e3a:\n[0.12125447814754506, 0.04753845384424927, 0.04946623199024993, 0.8404735490838163]", "value": 1000.0}, {"color": "yellow", "id": "2A027", "label": "2A027", "shape": "dot", "size": 10, "title": "\u8be5\u4e2a\u4f53\u5728\u4ea4\u914d\u8fc7\u7a0b\u51fa\u73b0\u4e86\n1\u6b21\n\u8be5\u4e2a\u4f53\u4eb2\u7f18\u5173\u7cfb\u7a0b\u5ea6\u6700\u9ad8\u7684\u56db\u4f4d\u5206\u522b\u662f:\n[\u00271NP6510\u0027, \u00271NP6524\u0027, \u00272A027\u0027, \u00272B050\u0027]\n\u4eb2\u7f18\u6307\u6570\u4e3a:\n[0.17512574194513877, 0.15295392290524137, 0.8648314864385681, 0.1606422827470588]", "value": 1000.0}, {"color": "yellow", "id": "2B053", "label": "2B053", "shape": "dot", "size": 10, "title": "\u8be5\u4e2a\u4f53\u5728\u4ea4\u914d\u8fc7\u7a0b\u51fa\u73b0\u4e86\n1\u6b21\n\u8be5\u4e2a\u4f53\u4eb2\u7f18\u5173\u7cfb\u7a0b\u5ea6\u6700\u9ad8\u7684\u56db\u4f4d\u5206\u522b\u662f:\n[\u00271NP6508\u0027, \u00271NP6510\u0027, \u00272B053\u0027, \u00272D058\u0027]\n\u4eb2\u7f18\u6307\u6570\u4e3a:\n[0.16870763497339744, 0.14864415374349263, 0.9052656818925898, 0.12213680074960799]", "value": 1000.0}, {"color": "yellow", "id": "2B061", "label": "2B061", "shape": "dot", "size": 10, "title": "\u8be5\u4e2a\u4f53\u5728\u4ea4\u914d\u8fc7\u7a0b\u51fa\u73b0\u4e86\n1\u6b21\n\u8be5\u4e2a\u4f53\u4eb2\u7f18\u5173\u7cfb\u7a0b\u5ea6\u6700\u9ad8\u7684\u56db\u4f4d\u5206\u522b\u662f:\n[\u00271NP6508\u0027, \u00271NP6518\u0027, \u00272B056\u0027, \u00272B061\u0027]\n\u4eb2\u7f18\u6307\u6570\u4e3a:\n[0.03883797518287658, 0.03529798995521254, 0.03894589563337654, 0.8440757587153661]", "value": 1000.0}, {"color": "yellow", "id": "2C034", "label": "2C034", "shape": "dot", "size": 10, "title": "\u8be5\u4e2a\u4f53\u5728\u4ea4\u914d\u8fc7\u7a0b\u51fa\u73b0\u4e86\n1\u6b21\n\u8be5\u4e2a\u4f53\u4eb2\u7f18\u5173\u7cfb\u7a0b\u5ea6\u6700\u9ad8\u7684\u56db\u4f4d\u5206\u522b\u662f:\n[\u00271NP6510\u0027, \u00272C021\u0027, \u00272C034\u0027, \u00272ZJ131\u0027]\n\u4eb2\u7f18\u6307\u6570\u4e3a:\n[0.05296437325080898, 0.04943897186780709, 0.8343172221237559, 0.04923094596303396]", "value": 1000.0}, {"color": "grey", "id": "G6", "label": "G6", "shape": "dot", "size": 10, "title": "\u8be5\u4e2a\u4f53\u5728\u4ea4\u914d\u8fc7\u7a0b\u51fa\u73b0\u4e86\n12\u6b21\n\u8be5\u4e2a\u4f53\u4eb2\u7f18\u5173\u7cfb\u7a0b\u5ea6\u6700\u9ad8\u7684\u56db\u4f4d\u5206\u522b\u662f:\n[]\n\u4eb2\u7f18\u6307\u6570\u4e3a:\n[]", "value": 12000.0}, {"color": "yellow", "id": "2AHHS1", "label": "2AHHS1", "shape": "dot", "size": 10, "title": "\u8be5\u4e2a\u4f53\u5728\u4ea4\u914d\u8fc7\u7a0b\u51fa\u73b0\u4e86\n1\u6b21\n\u8be5\u4e2a\u4f53\u4eb2\u7f18\u5173\u7cfb\u7a0b\u5ea6\u6700\u9ad8\u7684\u56db\u4f4d\u5206\u522b\u662f:\n[\u00271NP6504\u0027, \u00271NP6508\u0027, \u00271NP6510\u0027, \u00272AHHS1\u0027]\n\u4eb2\u7f18\u6307\u6570\u4e3a:\n[0.04349657824186903, 0.050249833631024074, 0.05475721388794547, 0.8508450932793933]", "value": 1000.0}, {"color": "yellow", "id": "2AHXT1", "label": "2AHXT1", "shape": "dot", "size": 10, "title": "\u8be5\u4e2a\u4f53\u5728\u4ea4\u914d\u8fc7\u7a0b\u51fa\u73b0\u4e86\n1\u6b21\n\u8be5\u4e2a\u4f53\u4eb2\u7f18\u5173\u7cfb\u7a0b\u5ea6\u6700\u9ad8\u7684\u56db\u4f4d\u5206\u522b\u662f:\n[\u00271NP6510\u0027, \u00272AHXT1\u0027, \u00272AHXT5\u0027, \u00272C007\u0027]\n\u4eb2\u7f18\u6307\u6570\u4e3a:\n[0.0528955861168194, 0.8354878187219736, 0.32364421308757413, 0.04356265472526407]", "value": 1000.0}, {"color": "yellow", "id": "2AHXT5", "label": "2AHXT5", "shape": "dot", "size": 10, "title": "\u8be5\u4e2a\u4f53\u5728\u4ea4\u914d\u8fc7\u7a0b\u51fa\u73b0\u4e86\n1\u6b21\n\u8be5\u4e2a\u4f53\u4eb2\u7f18\u5173\u7cfb\u7a0b\u5ea6\u6700\u9ad8\u7684\u56db\u4f4d\u5206\u522b\u662f:\n[\u00271NP6508\u0027, \u00271NP6510\u0027, \u00272AHXT1\u0027, \u00272AHXT5\u0027]\n\u4eb2\u7f18\u6307\u6570\u4e3a:\n[0.04833886385212437, 0.04950411304063167, 0.32364421308757413, 0.8270184939984936]", "value": 1000.0}, {"color": "yellow", "id": "2ZJ01", "label": "2ZJ01", "shape": "dot", "size": 10, "title": "\u8be5\u4e2a\u4f53\u5728\u4ea4\u914d\u8fc7\u7a0b\u51fa\u73b0\u4e86\n1\u6b21\n\u8be5\u4e2a\u4f53\u4eb2\u7f18\u5173\u7cfb\u7a0b\u5ea6\u6700\u9ad8\u7684\u56db\u4f4d\u5206\u522b\u662f:\n[\u00271NP6547\u0027, \u00272GDXYBY8\u0027, \u00272JXQN82\u0027, \u00272ZJ01\u0027]\n\u4eb2\u7f18\u6307\u6570\u4e3a:\n[0.032525844149011746, 0.03502745963672924, 0.03704662987594657, 0.8393258005088933]", "value": 1000.0}, {"color": "yellow", "id": "2ZJ131", "label": "2ZJ131", "shape": "dot", "size": 10, "title": "\u8be5\u4e2a\u4f53\u5728\u4ea4\u914d\u8fc7\u7a0b\u51fa\u73b0\u4e86\n1\u6b21\n\u8be5\u4e2a\u4f53\u4eb2\u7f18\u5173\u7cfb\u7a0b\u5ea6\u6700\u9ad8\u7684\u56db\u4f4d\u5206\u522b\u662f:\n[\u00271NP6510\u0027, \u00272A027\u0027, \u00272ZJ131\u0027, \u00272ZJ519\u0027]\n\u4eb2\u7f18\u6307\u6570\u4e3a:\n[0.0552627871695669, 0.04972165539017592, 0.873714992350455, 0.07533700016462852]", "value": 1000.0}, {"color": "yellow", "id": "2ZJ519", "label": "2ZJ519", "shape": "dot", "size": 10, "title": "\u8be5\u4e2a\u4f53\u5728\u4ea4\u914d\u8fc7\u7a0b\u51fa\u73b0\u4e86\n1\u6b21\n\u8be5\u4e2a\u4f53\u4eb2\u7f18\u5173\u7cfb\u7a0b\u5ea6\u6700\u9ad8\u7684\u56db\u4f4d\u5206\u522b\u662f:\n[\u00271NP6508\u0027, \u00271NP6517\u0027, \u00272ZJ131\u0027, \u00272ZJ519\u0027]\n\u4eb2\u7f18\u6307\u6570\u4e3a:\n[0.039912318406323026, 0.05452533075781679, 0.07533700016462852, 0.8430816266375641]", "value": 1000.0}, {"color": "grey", "id": "G5", "label": "G5", "shape": "dot", "size": 10, "title": "\u8be5\u4e2a\u4f53\u5728\u4ea4\u914d\u8fc7\u7a0b\u51fa\u73b0\u4e86\n4\u6b21\n\u8be5\u4e2a\u4f53\u4eb2\u7f18\u5173\u7cfb\u7a0b\u5ea6\u6700\u9ad8\u7684\u56db\u4f4d\u5206\u522b\u662f:\n[]\n\u4eb2\u7f18\u6307\u6570\u4e3a:\n[]", "value": 4000.0}, {"color": "yellow", "id": "2GDXYBY7", "label": "2GDXYBY7", "shape": "dot", "size": 10, "title": "\u8be5\u4e2a\u4f53\u5728\u4ea4\u914d\u8fc7\u7a0b\u51fa\u73b0\u4e86\n1\u6b21\n\u8be5\u4e2a\u4f53\u4eb2\u7f18\u5173\u7cfb\u7a0b\u5ea6\u6700\u9ad8\u7684\u56db\u4f4d\u5206\u522b\u662f:\n[\u00272GDXYBY7\u0027, \u00272GDXYBY8\u0027, \u00272GXLW1169\u0027, \u00273N012\u0027]\n\u4eb2\u7f18\u6307\u6570\u4e3a:\n[0.8502034041142515, 0.043543246544788035, 0.05381246076365541, 0.045039755125464306]", "value": 1000.0}, {"color": "yellow", "id": "2GDXYBY8", "label": "2GDXYBY8", "shape": "dot", "size": 10, "title": "\u8be5\u4e2a\u4f53\u5728\u4ea4\u914d\u8fc7\u7a0b\u51fa\u73b0\u4e86\n1\u6b21\n\u8be5\u4e2a\u4f53\u4eb2\u7f18\u5173\u7cfb\u7a0b\u5ea6\u6700\u9ad8\u7684\u56db\u4f4d\u5206\u522b\u662f:\n[\u00271NP6508\u0027, \u00272A027\u0027, \u00272GDXYBY8\u0027, \u00272GXLW1169\u0027]\n\u4eb2\u7f18\u6307\u6570\u4e3a:\n[0.057580403150464116, 0.052293030268194284, 0.8500386066695713, 0.06068777126555739]", "value": 1000.0}, {"color": "grey", "id": "G2", "label": "G2", "shape": "dot", "size": 10, "title": "\u8be5\u4e2a\u4f53\u5728\u4ea4\u914d\u8fc7\u7a0b\u51fa\u73b0\u4e86\n8\u6b21\n\u8be5\u4e2a\u4f53\u4eb2\u7f18\u5173\u7cfb\u7a0b\u5ea6\u6700\u9ad8\u7684\u56db\u4f4d\u5206\u522b\u662f:\n[]\n\u4eb2\u7f18\u6307\u6570\u4e3a:\n[]", "value": 8000.0}, {"color": "yellow", "id": "2GXLW1153", "label": "2GXLW1153", "shape": "dot", "size": 10, "title": "\u8be5\u4e2a\u4f53\u5728\u4ea4\u914d\u8fc7\u7a0b\u51fa\u73b0\u4e86\n1\u6b21\n\u8be5\u4e2a\u4f53\u4eb2\u7f18\u5173\u7cfb\u7a0b\u5ea6\u6700\u9ad8\u7684\u56db\u4f4d\u5206\u522b\u662f:\n[\u00271NP6508\u0027, \u00271NP6510\u0027, \u00271NP6516\u0027, \u00272GXLW1153\u0027]\n\u4eb2\u7f18\u6307\u6570\u4e3a:\n[0.07083541649983326, 0.06786857636739177, 0.05892017234676134, 0.8430344722064932]", "value": 1000.0}, {"color": "yellow", "id": "2GXLW1169", "label": "2GXLW1169", "shape": "dot", "size": 10, "title": "\u8be5\u4e2a\u4f53\u5728\u4ea4\u914d\u8fc7\u7a0b\u51fa\u73b0\u4e86\n1\u6b21\n\u8be5\u4e2a\u4f53\u4eb2\u7f18\u5173\u7cfb\u7a0b\u5ea6\u6700\u9ad8\u7684\u56db\u4f4d\u5206\u522b\u662f:\n[\u00271JY7417\u0027, \u00272GDXYBY7\u0027, \u00272GDXYBY8\u0027, \u00272GXLW1169\u0027]\n\u4eb2\u7f18\u6307\u6570\u4e3a:\n[0.05488485947447982, 0.05381246076365541, 0.06068777126555739, 0.8350289137432697]", "value": 1000.0}, {"color": "yellow", "id": "2HNJX21", "label": "2HNJX21", "shape": "dot", "size": 10, "title": "\u8be5\u4e2a\u4f53\u5728\u4ea4\u914d\u8fc7\u7a0b\u51fa\u73b0\u4e86\n1\u6b21\n\u8be5\u4e2a\u4f53\u4eb2\u7f18\u5173\u7cfb\u7a0b\u5ea6\u6700\u9ad8\u7684\u56db\u4f4d\u5206\u522b\u662f:\n[\u00272A015\u0027, \u00272B008\u0027, \u00272D008\u0027, \u00272HNJX21\u0027]\n\u4eb2\u7f18\u6307\u6570\u4e3a:\n[0.035223612347435374, 0.037136077456541204, 0.04075283398701948, 0.7679398254001999]", "value": 1000.0}, {"color": "yellow", "id": "2HNJX29", "label": "2HNJX29", "shape": "dot", "size": 10, "title": "\u8be5\u4e2a\u4f53\u5728\u4ea4\u914d\u8fc7\u7a0b\u51fa\u73b0\u4e86\n1\u6b21\n\u8be5\u4e2a\u4f53\u4eb2\u7f18\u5173\u7cfb\u7a0b\u5ea6\u6700\u9ad8\u7684\u56db\u4f4d\u5206\u522b\u662f:\n[\u00271JY7436\u0027, \u00271NP6508\u0027, \u00271NP6518\u0027, \u00272HNJX29\u0027]\n\u4eb2\u7f18\u6307\u6570\u4e3a:\n[0.04028906772676197, 0.04279432917564585, 0.042596475016395616, 0.8848973983092504]", "value": 1000.0}, {"color": "grey", "id": "G4", "label": "G4", "shape": "dot", "size": 10, "title": "\u8be5\u4e2a\u4f53\u5728\u4ea4\u914d\u8fc7\u7a0b\u51fa\u73b0\u4e86\n6\u6b21\n\u8be5\u4e2a\u4f53\u4eb2\u7f18\u5173\u7cfb\u7a0b\u5ea6\u6700\u9ad8\u7684\u56db\u4f4d\u5206\u522b\u662f:\n[]\n\u4eb2\u7f18\u6307\u6570\u4e3a:\n[]", "value": 6000.0}, {"color": "yellow", "id": "2JXQN82", "label": "2JXQN82", "shape": "dot", "size": 10, "title": "\u8be5\u4e2a\u4f53\u5728\u4ea4\u914d\u8fc7\u7a0b\u51fa\u73b0\u4e86\n1\u6b21\n\u8be5\u4e2a\u4f53\u4eb2\u7f18\u5173\u7cfb\u7a0b\u5ea6\u6700\u9ad8\u7684\u56db\u4f4d\u5206\u522b\u662f:\n[\u00272D003\u0027, \u00272JXQN82\u0027, \u00272ZJ01\u0027, \u00273N012\u0027]\n\u4eb2\u7f18\u6307\u6570\u4e3a:\n[0.03778210482933546, 0.88900080606903, 0.03704662987594657, 0.052438868714816]", "value": 1000.0}, {"color": "yellow", "id": "2JXSR23", "label": "2JXSR23", "shape": "dot", "size": 10, "title": "\u8be5\u4e2a\u4f53\u5728\u4ea4\u914d\u8fc7\u7a0b\u51fa\u73b0\u4e86\n1\u6b21\n\u8be5\u4e2a\u4f53\u4eb2\u7f18\u5173\u7cfb\u7a0b\u5ea6\u6700\u9ad8\u7684\u56db\u4f4d\u5206\u522b\u662f:\n[\u00271NP6508\u0027, \u00271NP6510\u0027, \u00272A022\u0027, \u00272JXSR23\u0027]\n\u4eb2\u7f18\u6307\u6570\u4e3a:\n[0.04973964213192575, 0.054733150544252186, 0.045390010461433206, 0.8452419801601843]", "value": 1000.0}, {"color": "yellow", "id": "2JXSR26", "label": "2JXSR26", "shape": "dot", "size": 10, "title": "\u8be5\u4e2a\u4f53\u5728\u4ea4\u914d\u8fc7\u7a0b\u51fa\u73b0\u4e86\n1\u6b21\n\u8be5\u4e2a\u4f53\u4eb2\u7f18\u5173\u7cfb\u7a0b\u5ea6\u6700\u9ad8\u7684\u56db\u4f4d\u5206\u522b\u662f:\n[\u00271JY7439\u0027, \u00271LZ7302\u0027, \u00271NP6533\u0027, \u00272JXSR26\u0027]\n\u4eb2\u7f18\u6307\u6570\u4e3a:\n[0.03737792621385617, 0.03886957351297754, 0.036469801873818014, 0.8128337605519114]", "value": 1000.0}, {"color": "grey", "id": "G3", "label": "G3", "shape": "dot", "size": 10, "title": "\u8be5\u4e2a\u4f53\u5728\u4ea4\u914d\u8fc7\u7a0b\u51fa\u73b0\u4e86\n4\u6b21\n\u8be5\u4e2a\u4f53\u4eb2\u7f18\u5173\u7cfb\u7a0b\u5ea6\u6700\u9ad8\u7684\u56db\u4f4d\u5206\u522b\u662f:\n[]\n\u4eb2\u7f18\u6307\u6570\u4e3a:\n[]", "value": 4000.0}, {"color": "yellow", "id": "2SCXY12", "label": "2SCXY12", "shape": "dot", "size": 10, "title": "\u8be5\u4e2a\u4f53\u5728\u4ea4\u914d\u8fc7\u7a0b\u51fa\u73b0\u4e86\n1\u6b21\n\u8be5\u4e2a\u4f53\u4eb2\u7f18\u5173\u7cfb\u7a0b\u5ea6\u6700\u9ad8\u7684\u56db\u4f4d\u5206\u522b\u662f:\n[\u00271NP6508\u0027, \u00271NP6510\u0027, \u00271NP6518\u0027, \u00272SCXY12\u0027]\n\u4eb2\u7f18\u6307\u6570\u4e3a:\n[0.056216327546395495, 0.04814514178219558, 0.053527066590691515, 0.8542251423439318]", "value": 1000.0}, {"color": "yellow", "id": "2SCXY13", "label": "2SCXY13", "shape": "dot", "size": 10, "title": "\u8be5\u4e2a\u4f53\u5728\u4ea4\u914d\u8fc7\u7a0b\u51fa\u73b0\u4e86\n1\u6b21\n\u8be5\u4e2a\u4f53\u4eb2\u7f18\u5173\u7cfb\u7a0b\u5ea6\u6700\u9ad8\u7684\u56db\u4f4d\u5206\u522b\u662f:\n[\u00271NP6508\u0027, \u00271NP6510\u0027, \u00272D058\u0027, \u00272SCXY13\u0027]\n\u4eb2\u7f18\u6307\u6570\u4e3a:\n[0.05163359742538605, 0.048788289331796894, 0.049287786011476195, 0.8341621472421796]", "value": 1000.0}, {"color": "#97c2fc", "id": 0, "label": 0, "shape": "dot", "size": 10}, {"color": "red", "id": "3N133", "label": "3N133", "shape": "dot", "size": 10, "title": "\u8be5\u4e2a\u4f53\u5728\u4ea4\u914d\u8fc7\u7a0b\u51fa\u73b0\u4e86\n1\u6b21\n\u8be5\u4e2a\u4f53\u4eb2\u7f18\u5173\u7cfb\u7a0b\u5ea6\u6700\u9ad8\u7684\u56db\u4f4d\u5206\u522b\u662f:\n[\u00271JY7410\u0027, \u00271NP6526\u0027, \u00272A006\u0027, \u00273N133\u0027]\n\u4eb2\u7f18\u6307\u6570\u4e3a:\n[0.07104764838540702, 0.055144658027803856, 0.17280593838754132, 0.8269489776722653]", "value": 1000.0}, {"color": "red", "id": "3N135", "label": "3N135", "shape": "dot", "size": 10, "title": "\u8be5\u4e2a\u4f53\u5728\u4ea4\u914d\u8fc7\u7a0b\u51fa\u73b0\u4e86\n1\u6b21\n\u8be5\u4e2a\u4f53\u4eb2\u7f18\u5173\u7cfb\u7a0b\u5ea6\u6700\u9ad8\u7684\u56db\u4f4d\u5206\u522b\u662f:\n[\u00271NP6515\u0027, \u00271NP6548\u0027, \u00272A025\u0027, \u00273N135\u0027]\n\u4eb2\u7f18\u6307\u6570\u4e3a:\n[0.051972914877859724, 0.045237366220636684, 0.0758817067627606, 0.8619419406828418]", "value": 1000.0}, {"color": "red", "id": "3N140", "label": "3N140", "shape": "dot", "size": 10, "title": "\u8be5\u4e2a\u4f53\u5728\u4ea4\u914d\u8fc7\u7a0b\u51fa\u73b0\u4e86\n1\u6b21\n\u8be5\u4e2a\u4f53\u4eb2\u7f18\u5173\u7cfb\u7a0b\u5ea6\u6700\u9ad8\u7684\u56db\u4f4d\u5206\u522b\u662f:\n[\u00271NP6535\u0027, \u00271NP6536\u0027, \u00271NP6539\u0027, \u00273N140\u0027]\n\u4eb2\u7f18\u6307\u6570\u4e3a:\n[0.05223910698868522, 0.07743634460374837, 0.05989829914117908, 0.7771373701004758]", "value": 1000.0}]);
+                  edges = new vis.DataSet([{"arrows": "to", "color": "blue", "from": "1NP6502", "label": "dam", "to": "2C004", "width": 1}, {"arrows": "to", "color": "blue", "from": "1NP6503", "label": "dam", "to": "2C001", "width": 1}, {"arrows": "to", "color": "blue", "from": "1NP6507", "label": "dam", "to": "2C003", "width": 1}, {"arrows": "to", "color": "blue", "from": "1NP6509", "label": "dam", "to": "2B029", "width": 1}, {"arrows": "to", "color": "blue", "from": "1NP6510", "label": "dam", "to": "2B030", "width": 1}, {"arrows": "to", "color": "blue", "from": "1NP6511", "label": "dam", "to": "2B008", "width": 1}, {"arrows": "to", "color": "blue", "from": "1NP6511", "label": "dam", "to": "2B032", "width": 1}, {"arrows": "to", "color": "blue", "from": "1NP6511", "label": "dam", "to": "2B050", "width": 1}, {"arrows": "to", "color": "blue", "from": "1NP6511", "label": "dam", "to": "2B059", "width": 1}, {"arrows": "to", "color": "orange", "from": "1NP6511", "label": "sire", "to": "2D058", "width": 1}, {"arrows": "to", "color": "blue", "from": "1NP6515", "label": "dam", "to": "2C006", "width": 1}, {"arrows": "to", "color": "blue", "from": "1NP6519", "label": "dam", "to": "2C007", "width": 1}, {"arrows": "to", "color": "blue", "from": "1NP6524", "label": "dam", "to": "2D014", "width": 1}, {"arrows": "to", "color": "blue", "from": "1NP6526", "label": "dam", "to": "2C010", "width": 1}, {"arrows": "to", "color": "blue", "from": "1NP6538", "label": "dam", "to": "2C021", "width": 1}, {"arrows": "to", "color": "blue", "from": "1NP6540", "label": "dam", "to": "2D003", "width": 1}, {"arrows": "to", "color": "orange", "from": "1NP6540", "label": "sire", "to": "2D008", "width": 1}, {"arrows": "to", "color": "blue", "from": "1NP6545", "label": "dam", "to": "2B014", "width": 1}, {"arrows": "to", "color": "blue", "from": "1NP6545", "label": "dam", "to": "2D058", "width": 1}, {"arrows": "to", "color": "blue", "from": "1NP6547", "label": "dam", "to": "2C016", "width": 1}, {"arrows": "to", "color": "blue", "from": "1NP6547", "label": "dam", "to": "2D008", "width": 1}, {"arrows": "to", "color": "orange", "from": "1NP6547", "label": "sire", "to": "2D103", "width": 1}, {"arrows": "to", "color": "orange", "from": "1NP6548", "label": "sire", "to": "2D003", "width": 1}, {"arrows": "to", "color": "orange", "from": "1NP6548", "label": "sire", "to": "2D014", "width": 1}, {"arrows": "to", "color": "blue", "from": "1NP6548", "label": "dam", "to": "2D103", "width": 1}, {"arrows": "to", "color": "blue", "from": "2A002", "label": "dam", "to": "3N002", "width": 1}, {"arrows": "to", "color": "blue", "from": "2A003", "label": "dam", "to": "3N146", "width": 1}, {"arrows": "to", "color": "blue", "from": "2A009", "label": "dam", "to": "3N012", "width": 1}, {"arrows": "to", "color": "blue", "from": "2A009", "label": "dam", "to": "3N060", "width": 1}, {"arrows": "to", "color": "blue", "from": "2A011", "label": "dam", "to": "3N075", "width": 1}, {"arrows": "to", "color": "blue", "from": "2A015", "label": "dam", "to": "3N132", "width": 1}, {"arrows": "to", "color": "blue", "from": "2A015", "label": "dam", "to": "3N166", "width": 1}, {"arrows": "to", "color": "blue", "from": "2A018", "label": "dam", "to": "3N008", "width": 1}, {"arrows": "to", "color": "blue", "from": "2A019", "label": "dam", "to": "4N152", "width": 1}, {"arrows": "to", "color": "blue", "from": "2B056", "label": "dam", "to": "3N053", "width": 1}, {"arrows": "to", "color": "blue", "from": "2C001", "label": "dam", "to": "3N006", "width": 1}, {"arrows": "to", "color": "blue", "from": "2C004", "label": "dam", "to": "3N016", "width": 1}, {"arrows": "to", "color": "blue", "from": "2C007", "label": "dam", "to": "3N034", "width": 1}, {"arrows": "to", "color": "green", "from": "G1", "to": "1JOX6539", "width": 1}, {"arrows": "to", "color": "green", "from": "G1", "to": "1JOX6546", "width": 1}, {"arrows": "to", "color": "green", "from": "G1", "to": "1JOX6554", "width": 1}, {"arrows": "to", "color": "green", "from": "G1", "to": "1JY7401", "width": 1}, {"arrows": "to", "color": "green", "from": "G1", "to": "1JY7402", "width": 1}, {"arrows": "to", "color": "green", "from": "G1", "to": "1JY7403", "width": 1}, {"arrows": "to", "color": "green", "from": "G1", "to": "1JY7405", "width": 1}, {"arrows": "to", "color": "green", "from": "G1", "to": "1JY7406", "width": 1}, {"arrows": "to", "color": "green", "from": "G1", "to": "1JY7408", "width": 1}, {"arrows": "to", "color": "green", "from": "G1", "to": "1JY7410", "width": 1}, {"arrows": "to", "color": "green", "from": "G1", "to": "1JY74103", "width": 1}, {"arrows": "to", "color": "green", "from": "G1", "to": "1JY74108", "width": 1}, {"arrows": "to", "color": "green", "from": "G1", "to": "1JY7411-1", "width": 1}, {"arrows": "to", "color": "green", "from": "G1", "to": "1JY74115", "width": 1}, {"arrows": "to", "color": "green", "from": "G1", "to": "1JY74118", "width": 1}, {"arrows": "to", "color": "green", "from": "G1", "to": "1JY7417", "width": 1}, {"arrows": "to", "color": "green", "from": "G1", "to": "1JY7428", "width": 1}, {"arrows": "to", "color": "green", "from": "G1", "to": "1JY7434", "width": 1}, {"arrows": "to", "color": "green", "from": "G1", "to": "1JY7436", "width": 1}, {"arrows": "to", "color": "green", "from": "G1", "to": "1JY7438", "width": 1}, {"arrows": "to", "color": "green", "from": "G1", "to": "1JY7439", "width": 1}, {"arrows": "to", "color": "green", "from": "G1", "to": "1JY7442", "width": 1}, {"arrows": "to", "color": "green", "from": "G1", "to": "1JY7451", "width": 1}, {"arrows": "to", "color": "green", "from": "G1", "to": "1JY7453", "width": 1}, {"arrows": "to", "color": "green", "from": "G1", "to": "1JY7456", "width": 1}, {"arrows": "to", "color": "green", "from": "G1", "to": "1JY7478", "width": 1}, {"arrows": "to", "color": "green", "from": "G1", "to": "1JY7491", "width": 1}, {"arrows": "to", "color": "green", "from": "G1", "to": "1LZ6611", "width": 1}, {"arrows": "to", "color": "green", "from": "G1", "to": "1LZ7302", "width": 1}, {"arrows": "to", "color": "green", "from": "G1", "to": "1LZ7305", "width": 1}, {"arrows": "to", "color": "green", "from": "G1", "to": "1LZ7308", "width": 1}, {"arrows": "to", "color": "green", "from": "G1", "to": "1LZ7309", "width": 1}, {"arrows": "to", "color": "green", "from": "G1", "to": "1LZ7311", "width": 1}, {"arrows": "to", "color": "green", "from": "G1", "to": "1LZ7317", "width": 1}, {"arrows": "to", "color": "green", "from": "G1", "to": "1LZ7320", "width": 1}, {"arrows": "to", "color": "green", "from": "G1", "to": "1NP6421", "width": 1}, {"arrows": "to", "color": "green", "from": "G1", "to": "1NP6502", "width": 1}, {"arrows": "to", "color": "green", "from": "G1", "to": "1NP6503", "width": 1}, {"arrows": "to", "color": "green", "from": "G1", "to": "1NP6504", "width": 1}, {"arrows": "to", "color": "green", "from": "G1", "to": "1NP6505", "width": 1}, {"arrows": "to", "color": "green", "from": "G1", "to": "1NP6507", "width": 1}, {"arrows": "to", "color": "green", "from": "G1", "to": "1NP6508", "width": 1}, {"arrows": "to", "color": "green", "from": "G1", "to": "1NP6509", "width": 1}, {"arrows": "to", "color": "green", "from": "G1", "to": "1NP6510", "width": 1}, {"arrows": "to", "color": "green", "from": "G1", "to": "1NP6511", "width": 1}, {"arrows": "to", "color": "green", "from": "G1", "to": "1NP6514", "width": 1}, {"arrows": "to", "color": "green", "from": "G1", "to": "1NP6515", "width": 1}, {"arrows": "to", "color": "green", "from": "G1", "to": "1NP6516", "width": 1}, {"arrows": "to", "color": "green", "from": "G1", "to": "1NP6517", "width": 1}, {"arrows": "to", "color": "green", "from": "G1", "to": "1NP6518", "width": 1}, {"arrows": "to", "color": "green", "from": "G1", "to": "1NP6519", "width": 1}, {"arrows": "to", "color": "green", "from": "G1", "to": "1NP6520", "width": 1}, {"arrows": "to", "color": "green", "from": "G1", "to": "1NP6521", "width": 1}, {"arrows": "to", "color": "green", "from": "G1", "to": "1NP6522", "width": 1}, {"arrows": "to", "color": "green", "from": "G1", "to": "1NP6523", "width": 1}, {"arrows": "to", "color": "green", "from": "G1", "to": "1NP6524", "width": 1}, {"arrows": "to", "color": "green", "from": "G1", "to": "1NP6525", "width": 1}, {"arrows": "to", "color": "green", "from": "G1", "to": "1NP6526", "width": 1}, {"arrows": "to", "color": "green", "from": "G1", "to": "1NP6527", "width": 1}, {"arrows": "to", "color": "green", "from": "G1", "to": "1NP6528", "width": 1}, {"arrows": "to", "color": "green", "from": "G1", "to": "1NP6529", "width": 1}, {"arrows": "to", "color": "green", "from": "G1", "to": "1NP6530-1", "width": 1}, {"arrows": "to", "color": "green", "from": "G1", "to": "1NP6532", "width": 1}, {"arrows": "to", "color": "green", "from": "G1", "to": "1NP6533", "width": 1}, {"arrows": "to", "color": "green", "from": "G1", "to": "1NP6535", "width": 1}, {"arrows": "to", "color": "green", "from": "G1", "to": "1NP6536", "width": 1}, {"arrows": "to", "color": "green", "from": "G1", "to": "1NP6537", "width": 1}, {"arrows": "to", "color": "green", "from": "G1", "to": "1NP6538", "width": 1}, {"arrows": "to", "color": "green", "from": "G1", "to": "1NP6539", "width": 1}, {"arrows": "to", "color": "green", "from": "G1", "to": "1NP6540", "width": 1}, {"arrows": "to", "color": "green", "from": "G1", "to": "1NP6543-1-1", "width": 1}, {"arrows": "to", "color": "green", "from": "G1", "to": "1NP6543-2", "width": 1}, {"arrows": "to", "color": "green", "from": "G1", "to": "1NP6544-3", "width": 1}, {"arrows": "to", "color": "green", "from": "G1", "to": "1NP6545", "width": 1}, {"arrows": "to", "color": "green", "from": "G1", "to": "1NP6547", "width": 1}, {"arrows": "to", "color": "green", "from": "G1", "to": "1NP6548", "width": 1}, {"arrows": "to", "color": "green", "from": "G1", "to": "1SM7401", "width": 1}, {"arrows": "to", "color": "green", "from": "G1", "to": "1SM7402", "width": 1}, {"arrows": "to", "color": "green", "from": "G1", "to": "1SM7404", "width": 1}, {"arrows": "to", "color": "green", "from": "G1", "to": "1SM7406", "width": 1}, {"arrows": "to", "color": "green", "from": "G1", "to": "1SM7407", "width": 1}, {"arrows": "to", "color": "green", "from": "G1", "to": "1SM7410", "width": 1}, {"arrows": "to", "color": "green", "from": "G1", "to": "1SM7411", "width": 1}, {"arrows": "to", "color": "green", "from": "G1", "to": "1SM7415", "width": 1}, {"arrows": "to", "color": "green", "from": "G1", "to": "1SM7435", "width": 1}, {"arrows": "to", "color": "green", "from": "G1", "to": "1SM7438", "width": 1}, {"arrows": "to", "color": "green", "from": "G1", "to": "1SM7439", "width": 1}, {"arrows": "to", "color": "green", "from": "G1", "to": "1SM7440", "width": 1}, {"arrows": "to", "color": "green", "from": "G1", "to": "1SM7441", "width": 1}, {"arrows": "to", "color": "green", "from": "G1", "to": "1SM7443", "width": 1}, {"arrows": "to", "color": "green", "from": "G1", "to": "1SM7446", "width": 1}, {"arrows": "to", "color": "green", "from": "G1", "to": "1SM7451", "width": 1}, {"arrows": "to", "color": "green", "from": "G1", "to": "1SM7454", "width": 1}, {"arrows": "to", "color": "green", "from": "G1", "to": "1SM7461", "width": 1}, {"arrows": "to", "color": "green", "from": "G1", "to": "2A001", "width": 1}, {"arrows": "to", "color": "green", "from": "G1", "to": "2A002", "width": 1}, {"arrows": "to", "color": "green", "from": "G1", "to": "2A003", "width": 1}, {"arrows": "to", "color": "green", "from": "G1", "to": "2A005", "width": 1}, {"arrows": "to", "color": "green", "from": "G1", "to": "2A006", "width": 1}, {"arrows": "to", "color": "green", "from": "G1", "to": "2A008", "width": 1}, {"arrows": "to", "color": "green", "from": "G1", "to": "2A009", "width": 1}, {"arrows": "to", "color": "green", "from": "G1", "to": "2A011", "width": 1}, {"arrows": "to", "color": "green", "from": "G1", "to": "2A012", "width": 1}, {"arrows": "to", "color": "green", "from": "G1", "to": "2A013", "width": 1}, {"arrows": "to", "color": "green", "from": "G1", "to": "2A015", "width": 1}, {"arrows": "to", "color": "green", "from": "G1", "to": "2A016", "width": 1}, {"arrows": "to", "color": "green", "from": "G1", "to": "2A017", "width": 1}, {"arrows": "to", "color": "green", "from": "G1", "to": "2A018", "width": 1}, {"arrows": "to", "color": "green", "from": "G1", "to": "2A019", "width": 1}, {"arrows": "to", "color": "green", "from": "G1", "to": "2A020", "width": 1}, {"arrows": "to", "color": "green", "from": "G1", "to": "2A021", "width": 1}, {"arrows": "to", "color": "green", "from": "G1", "to": "2A022", "width": 1}, {"arrows": "to", "color": "green", "from": "G1", "to": "2A023", "width": 1}, {"arrows": "to", "color": "green", "from": "G1", "to": "2A024", "width": 1}, {"arrows": "to", "color": "green", "from": "G1", "to": "2A025", "width": 1}, {"arrows": "to", "color": "green", "from": "G1", "to": "2A026", "width": 1}, {"arrows": "to", "color": "green", "from": "G1", "to": "2A027", "width": 1}, {"arrows": "to", "color": "orange", "from": "G1", "label": "sire", "to": "2B008", "width": 1}, {"arrows": "to", "color": "orange", "from": "G1", "label": "sire", "to": "2B014", "width": 1}, {"arrows": "to", "color": "orange", "from": "G1", "label": "sire", "to": "2B029", "width": 1}, {"arrows": "to", "color": "orange", "from": "G1", "label": "sire", "to": "2B030", "width": 1}, {"arrows": "to", "color": "orange", "from": "G1", "label": "sire", "to": "2B032", "width": 1}, {"arrows": "to", "color": "orange", "from": "G1", "label": "sire", "to": "2B050", "width": 1}, {"arrows": "to", "color": "green", "from": "G1", "to": "2B053", "width": 1}, {"arrows": "to", "color": "green", "from": "G1", "to": "2B056", "width": 1}, {"arrows": "to", "color": "orange", "from": "G1", "label": "sire", "to": "2B059", "width": 1}, {"arrows": "to", "color": "green", "from": "G1", "to": "2B061", "width": 1}, {"arrows": "to", "color": "orange", "from": "G1", "label": "sire", "to": "2C001", "width": 1}, {"arrows": "to", "color": "orange", "from": "G1", "label": "sire", "to": "2C003", "width": 1}, {"arrows": "to", "color": "orange", "from": "G1", "label": "sire", "to": "2C004", "width": 1}, {"arrows": "to", "color": "orange", "from": "G1", "label": "sire", "to": "2C006", "width": 1}, {"arrows": "to", "color": "orange", "from": "G1", "label": "sire", "to": "2C007", "width": 1}, {"arrows": "to", "color": "orange", "from": "G1", "label": "sire", "to": "2C010", "width": 1}, {"arrows": "to", "color": "orange", "from": "G1", "label": "sire", "to": "2C016", "width": 1}, {"arrows": "to", "color": "orange", "from": "G1", "label": "sire", "to": "2C021", "width": 1}, {"arrows": "to", "color": "green", "from": "G1", "to": "2C034", "width": 1}, {"arrows": "to", "color": "green", "from": "G6", "to": "2AHHS1", "width": 1}, {"arrows": "to", "color": "green", "from": "G6", "to": "2AHXT1", "width": 1}, {"arrows": "to", "color": "green", "from": "G6", "to": "2AHXT5", "width": 1}, {"arrows": "to", "color": "green", "from": "G6", "to": "2ZJ01", "width": 1}, {"arrows": "to", "color": "green", "from": "G6", "to": "2ZJ131", "width": 1}, {"arrows": "to", "color": "green", "from": "G6", "to": "2ZJ519", "width": 1}, {"arrows": "to", "color": "green", "from": "G5", "to": "2GDXYBY7", "width": 1}, {"arrows": "to", "color": "green", "from": "G5", "to": "2GDXYBY8", "width": 1}, {"arrows": "to", "color": "green", "from": "G2", "to": "2GXLW1153", "width": 1}, {"arrows": "to", "color": "green", "from": "G2", "to": "2GXLW1169", "width": 1}, {"arrows": "to", "color": "green", "from": "G2", "to": "2HNJX21", "width": 1}, {"arrows": "to", "color": "green", "from": "G2", "to": "2HNJX29", "width": 1}, {"arrows": "to", "color": "green", "from": "G4", "to": "2JXQN82", "width": 1}, {"arrows": "to", "color": "green", "from": "G4", "to": "2JXSR23", "width": 1}, {"arrows": "to", "color": "green", "from": "G4", "to": "2JXSR26", "width": 1}, {"arrows": "to", "color": "green", "from": "G3", "to": "2SCXY12", "width": 1}, {"arrows": "to", "color": "green", "from": "G3", "to": "2SCXY13", "width": 1}, {"arrows": "to", "color": "green", "from": 0, "to": "3N133", "width": 1}, {"arrows": "to", "color": "green", "from": 0, "to": "3N135", "width": 1}, {"arrows": "to", "color": "green", "from": 0, "to": "3N140", "width": 1}]);
+
+                  nodeColors = {};
+                  allNodes = nodes.get({ returnType: "Object" });
+                  for (nodeId in allNodes) {
+                    nodeColors[nodeId] = allNodes[nodeId].color;
+                  }
+                  allEdges = edges.get({ returnType: "Object" });
+                  // adding nodes and edges to the graph
+                  data = {nodes: nodes, edges: edges};
+
+                  var options = {
+    "configure": {
+        "enabled": true,
+        "filter": [
+            "physics"
+        ]
+    },
+    "edges": {
+        "color": {
+            "inherit": true
+        },
+        "smooth": {
+            "enabled": true,
+            "type": "dynamic"
+        }
+    },
+    "interaction": {
+        "dragNodes": true,
+        "hideEdgesOnDrag": false,
+        "hideNodesOnDrag": false
+    },
+    "physics": {
+        "enabled": true,
+        "stabilization": {
+            "enabled": true,
+            "fit": true,
+            "iterations": 1000,
+            "onlyDynamicEdges": false,
+            "updateInterval": 50
+        }
+    }
+};
+
+                  
+
+
+                  
+                  // if this network requires displaying the configure window,
+                  // put it in its div
+                  options.configure["container"] = document.getElementById("config");
+                  
+
+                  network = new vis.Network(container, data, options);
+
+                  
+
+                  
+                    network.on("selectNode", neighbourhoodHighlight);
+                  
+
+                  
+
+
+                  
+                      network.on("stabilizationProgress", function(params) {
+                          document.getElementById('loadingBar').removeAttribute("style");
+                          var maxWidth = 496;
+                          var minWidth = 20;
+                          var widthFactor = params.iterations/params.total;
+                          var width = Math.max(minWidth,maxWidth * widthFactor);
+                          document.getElementById('bar').style.width = width + 'px';
+                          document.getElementById('text').innerHTML = Math.round(widthFactor*100) + '%';
+                      });
+                      network.once("stabilizationIterationsDone", function() {
+                          document.getElementById('text').innerHTML = '100%';
+                          document.getElementById('bar').style.width = '496px';
+                          document.getElementById('loadingBar').style.opacity = 0;
+                          // really clean the dom element
+                          setTimeout(function () {document.getElementById('loadingBar').style.display = 'none';}, 500);
+                      });
+                  
+
+                  return network;
+
+              }
+              drawGraph();
+        </script>
+    </body>
+</html>

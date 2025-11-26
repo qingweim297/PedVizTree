@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/html" xmlns="http://www.w3.org/1999/html">
+<head>
+    <meta charset="UTF-8">
+    <title>杉木遗传信息管理系统</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- jQuery UI -->
+    <link href="https://code.jquery.com/ui/1.10.3/themes/redmond/jquery-ui.css" rel="stylesheet" media="screen">
+
+    <!-- Bootstrap -->
+    <link href="/static/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+    <!-- styles -->
+    <link href="/static/css/styles.css" rel="stylesheet">
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+    <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+    <script src="https://oss.maxcdn.com/libs/respond.js/1.3.0/respond.min.js"></script>
+    <![endif]-->
+</head>
+<body>
+<div class="header">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-5">
+                <!-- Logo -->
+                <div class="logo">
+                    <h1><a href="index.html">杉木遗传信息管理系统</a></h1>
+                </div>
+            </div>
+            <div class="col-md-5">
+                <div class="row">
+                    <div class="col-lg-12">
+                        <div class="input-group form">
+                            <input type="text" class="form-control" placeholder="Search...">
+                            <span class="input-group-btn">
+	                         <button class="btn btn-primary" type="button">搜索</button>
+	                       </span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-2">
+                <div class="navbar navbar-inverse" role="banner">
+                    <nav class="collapse navbar-collapse bs-navbar-collapse navbar-right" role="navigation">
+                        <ul class="nav navbar-nav">
+                            <li class="dropdown">
+                                <a href="#" class="dropdown-toggle" data-toggle="dropdown">个人信息<b class="caret"></b></a>
+                                <ul class="dropdown-menu animated fadeInUp">
+<!--                                    <li><a href="profile.html">Profile</a></li>-->
+                                    <li><a href="/login">Logout</a></li>
+                                </ul>
+                            </li>
+                        </ul>
+                    </nav>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="page-content">
+    <div class="row">
+        <div class="col-md-2">
+            <div class="sidebar content-box" style="display: block;">
+                <ul class="nav">
+                    <!-- Main menu -->
+<!--                    <li><a href="index.html"><i class="glyphicon glyphicon-home"></i>首页</a></li>-->
+                    <li class="current"><a href="/germ_list"><i class="glyphicon glyphicon-list"></i> 育种资源清单管理</a></li>
+                    <li><a href="/image_list"><i class="glyphicon glyphicon-camera"></i> 图片上传</a></li>
+                    <li class="submenu">
+                        <a href="#">
+                            <i class="glyphicon glyphicon-record"></i> 谱系信息管理
+                            <span class="caret pull-right"></span>
+                        </a>
+                        <!-- Sub menu -->
+                        <ul>
+                            <li><a href="/pedigree_list">谱系成员管理</a></li>
+                            <li><a href="/excel_to_network">excel生成网络谱系图</a></li>
+                        </ul>
+                    </li>
+                    <li><a href="/test_tree_list"><i class="glyphicon glyphicon-tree-conifer"></i> 遗传测定林信息管理</a></li>
+                    <li class="submenu">
+                        <a href="#">
+                            <i class="glyphicon glyphicon-pencil"></i> 辅助决策分析
+                            <span class="caret pull-right"></span>
+                        </a>
+                        <!-- Sub menu -->
+                        <ul>
+                            <li><a href="/evaluate_germ">可视化资源简介</a></li>
+                            <li><a href="/analysis_germ">主成分分析</a></li>
+                            <li><a href="/estimate_plantation">育种值分析</a></li>
+                        </ul>
+                    </li>
+                    <li><a href="/file_list"><i class="glyphicon glyphicon-file"></i> 文件管理</a></li>
+                    <li class="submenu">
+                        <a href="#">
+                            <i class="glyphicon glyphicon-list"></i> 系统设置
+                            <span class="caret pull-right"></span>
+                        </a>
+                        <!-- Sub menu -->
+                        <ul>
+                            <li><a href="/login">Login</a></li>
+                            <li><a href="/signup">Signup</a></li>
+                        </ul>
+                    </li>
+                </ul>
+            </div>
+        </div>
+        <div class="col-md-10">
+            <div class="content-box-large">
+                <div class="panel-heading">
+                    <div class="panel-title">查看育种资源资源信息</div>
+                </div>
+
+                <div class="panel-body">
+                 <div class="col-md-8">
+                    <form class="form-horizontal" role="form" action="/check_germplasm/?id={{ germplasm.id }}" method="post">
+                        <input type="text" name="check_id" value="{{ germplasm.id }}" class="hide">
+                        {% csrf_token %}
+                        <div>
+                            <h4>共性特征</h4>
+                            <table class=table width="400px" height="40px">
+                                <tr class="success">
+                                    <td><div align="left"><b>序号</b></div></td>
+                                    <td><div align="left">{{ check_germ.id }}</div></td>
+                                    <td><div align="left"><b>编号</b></div> </td>
+                                    <td><div align="left">{{ check_germ.germ_id }}</div></td>
+                                </tr>
+                            </table>
+                        </div>
+                        </form>
+                        <div>
+                            <h4>环境特征</h4>
+                            <table class=table width="400px" height="50px">
+                                <tr class="success">
+                                    <td><div align="left"><b>时间</b></div> </td>
+                                    <td><div align="left">{{ check_germ.time }}</div></td>
+                                    <td><div align="left"><b>种源</b></div></td>
+                                    <td><div align="left">{{ check_germ.provenance }}</div></td>
+                                    <td><div align="left"><b>经度</b></div></td>
+                                    <td><div align="left">{{ check_germ.longitude }}</div></td>
+                                    <td><div align="left"><b>纬度</b></div></td>
+                                    <td><div align="left">{{ check_germ.latitude }}</div></td>
+                                </tr>
+                                <tr>
+                                    <td><div align="left"><b>平均海拔</b></div> </td>
+                                    <td><div align="left">{{ check_germ.average_altitude }}</div></td>
+                                    <td><div align="left"><b>年平均气温</b></div> </td>
+                                    <td><div align="left">{{ check_germ.annual_average_temperature }}</div></td>
+                                    <td><div align="left"><b>年降水量</b></div> </td>
+                                    <td><div align="left">{{ check_germ.annual_precipitation }}</div></td>
+                                    <td><div align="left"><b>年均日照时数</b></div> </td>
+                                    <td><div align="left">{{ check_germ.average_annual_sunshine_duration }}</div></td>
+                                </tr>
+                                <tr class="success">
+                                    <td><div align="left"><b>无霜期</b></div> </td>
+                                    <td><div align="left">{{ check_germ.frost_free_period }}</div></td>
+                                    <td><div align="left"><b>相对湿度</b></div> </td>
+                                    <td><div align="left">{{ check_germ.relative_humidity }}</div></td>
+                                </tr>
+                            </table>
+                        </div>
+                        </br>
+                        <div>
+                            <h4>形态特征与生物学特性</h4>
+                            <table class=table width="400px" height="50px">
+                                <tr class="success">
+                                    <td><div align="left"><b>树高</b></div> </td>
+                                    <td><div align="left">{{ check_germ.total_height }}</div></td>
+                                    <td><div align="left"><b>胸径</b></div> </td>
+                                    <td><div align="left">{{ check_germ.diameter_at_breast_height }}</div></td>
+                                    <td><div align="left"><b>球果类型</b></div> </td>
+                                    <td><div align="left">{{ check_germ.cone_type }}</div></td>
+                                    <td><div align="left"><b>苞鳞形状</b></div> </td>
+                                    <td><div align="left">{{ check_germ.cone_bract_scale_shape }}</div></td>
+                                </tr>
+                                <tr>
+                                    <td><div align="left"><b>张裂程度</b></div> </td>
+                                    <td><div align="left">{{ check_germ.the_split_of_bracts_and_scales_in_immature_cones }}</div></td>
+                                    <td><div align="left"><b>球果长度</b></div> </td>
+                                    <td><div align="left">{{ check_germ.cone_length }}</div></td>
+                                    <td><div align="left"><b>球果宽度</b></div> </td>
+                                    <td><div align="left">{{ check_germ.cone_width }}</div></td>
+                                    <td><div align="left"><b>球果体积</b></div> </td>
+                                    <td><div align="left">{{ check_germ.cone_volume }}</div></td>
+                                </tr>
+                                <tr class="success">
+                                    <td><div align="left"><b>果形系数</b></div> </td>
+                                    <td><div align="left">{{ check_germ.cone_shape_coefficient }}</div></td>
+                                    <td><div align="left"><b>苞鳞长度</b></div> </td>
+                                    <td><div align="left">{{ check_germ.bract_scale_length}}</div></td>
+                                    <td><div align="left"><b>苞鳞宽度</b></div> </td>
+                                    <td><div align="left">{{ check_germ.bract_scale_width }}</div></td>
+                                    <td><div align="left"><b>苞鳞长宽比</b></div> </td>
+                                    <td><div align="left">{{ check_germ.bract_scale_length_width_ratio }}</div></td>
+                                </tr>
+                                <tr>
+                                    <td><div align="left"><b>新叶白粉</b></div> </td>
+                                    <td><div align="left">{{ check_germ.new_leaf_white_powder }}</div></td>
+                                    <td><div align="left"><b>老叶白粉</b></div> </td>
+                                    <td><div align="left">{{ check_germ.old_leaf_white_powder }}</div></td>
+                                    <td><div align="left"><b>颜色</b></div> </td>
+                                    <td><div align="left">{{ check_germ.leaf_color }}</div></td>
+                                    <td><div align="left"><b>锯齿密度</b></div> </td>
+                                    <td><div align="left">{{ check_germ.serration_density }}</div></td>
+                                </tr>
+                                <tr class="success">
+                                    <td><div align="left"><b>针叶硬度</b></div> </td>
+                                    <td><div align="left">{{ check_germ.needle_hardness }}</div></td>
+                                    <td><div align="left"><b>针叶长度</b></div> </td>
+                                    <td><div align="left">{{ check_germ.leaf_length }}</div></td>
+                                    <td><div align="left"><b>针叶宽度</b></div> </td>
+                                    <td><div align="left">{{ check_germ.leaf_width }}</div></td>
+                                    <td><div align="left"><b>叶形指数</b></div> </td>
+                                    <td><div align="left">{{ check_germ.leaf_index }}</div></td>
+                                </tr>
+                            </table>
+                        </div>
+                        </br>
+                        <div>
+                            <h4>品质特性</h4>
+                            <table class=table width="400px" height="50px">
+                                <tr class="success">
+                                    <td><div align="left"><b>材积</b></div> </td>
+                                    <td><div align="left">{{ check_germ.volume_of_wood }}</div></td>
+                                    <td><div align="left"><b>木材湿重</b></div> </td>
+                                    <td><div align="left">{{ check_germ.wet_weight_of_wood }}</div></td>
+                                    <td><div align="left"><b>木材干重</b></div> </td>
+                                    <td><div align="left">{{ check_germ.dry_weight_of_wood }}</div></td>
+                                    <td><div align="left"><b>木材吸水率</b></div> </td>
+                                    <td><div align="left">{{ check_germ.water_absorption_of_wood }}</div></td>
+                                </tr>
+                                <tr>
+                                    <td><div align="left"><b>木材密度</b></div> </td>
+                                    <td><div align="left">{{ check_germ.wood_density }}</div></td>
+                                    <td><div align="left"><b>千粒重</b></div> </td>
+                                    <td><div align="left">{{ check_germ.thousand_seed_weight }}</div></td>
+                                    <td><div align="left"><b>出苗率</b></div> </td>
+                                    <td><div align="left">{{ check_germ.rate_of_emergence}}</div></td>
+                                </tr>
+                            </table>
+                        </div>
+                    </div>
+                    </br>
+                    {% csrf_token %}
+                      <div class="col-md-2">
+                        <div class="thumbnail">
+                          <img id=“picture” src="{{MEDIA_URL}}{{ germ_image.germ_image }}" alt="图片显示错误或未存入相关图片"/>
+                          <div class="caption">
+                            <p>杉木图片</p>
+                          </div>
+                        </div>
+                      </div>
+                    <!--<form class="form-horizontal" role="form" action="/check_germplasm/?id={{ GermImage.file_id }}" method="post">
+                             <input type="text" name="file_id" value="{{ GermImage.file_id }}" class="hide">
+                        {% csrf_token %}
+                        <div class="thumbnail">
+                          <div class="col-xs-6 col-md-3">
+                            {% load static %}
+                              <img id="picture" width="300px" src="{{MEDIA_URL}}{{ germ_image.germ_image }}" alt="图片加载失败"/>
+                          </div>
+                        </div>
+                    </form>-->
+
+                    <form>
+                        <div class="form-group">
+                            <div class="col-sm-offset-1 col-sm-10">
+                                <button type="submit" formmethod="get" formaction="/germ_list" class="btn btn-default">返回</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>
+
+<footer>
+    <div class="container">
+
+        <div class="copy text-center">
+            copyright 2022 数量遗传与林木（杉木）育种团队<br>Quantitative Genetics and Tree Breeding<a href='#'>Website</a>
+        </div>
+
+    </div>
+</footer>
+
+<link href="/static/vendors/datatables/dataTables.bootstrap.css" rel="stylesheet" media="screen">
+<!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
+<script src="https://code.jquery.com/jquery.js"></script>
+<!-- jQuery UI -->
+<script src="https://code.jquery.com/ui/1.10.3/jquery-ui.js"></script>
+<!-- Include all compiled plugins (below), or include individual files as needed -->
+<script src="/static/bootstrap/js/bootstrap.min.js"></script>
+<script src="/static/vendors/datatables/js/jquery.dataTables.min.js"></script>
+<script src="/static/vendors/datatables/dataTables.bootstrap.js"></script>
+<script src="/static/js/custom.js"></script>
+<script src="/static/js/tables.js"></script>
+<script>
+   var pictureUrl = data.url/;//后台传入的图片路径，url指的是数据库中图片的路径
+   document.getElementById("picture").src = pictureUrl;
+</script>
+</body>
+</html>
